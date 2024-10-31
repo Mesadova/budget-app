@@ -1,18 +1,22 @@
 import styled from "styled-components"
 import { Card, CardBody, CardTitle, CardText, FormCheck } from "react-bootstrap"
+import { useState } from "react"
 
 const StyledCard = styled(Card)`
     display: flex;
     padding: 20px;
-    box-shadow: 1px 15px 5px 5px lightgrey;
+    box-shadow: -0px 5px 5px 5px grey;
     width: 40%;
+    min-width: 50%;
     border-radius: 30px;
     overflow: hidden;
     font-family: Poppins;
     justify-content: space-between;
+    background-color: white;
+    gap: 25px;
 `
 
-const StyledCardBody = styled(Card)`
+const StyledCardBody = styled(CardBody)`
     display: flex;
     font-size: 16px;
     width: 30%;
@@ -41,6 +45,18 @@ const StyledCardText = styled(CardText)`
 `
 
 const AppCard = (props) => {
+    const [isChecked, setIsChecked] = useState(false)
+
+    const handleCheckboxChange = (e) => {
+        const checked = e.target.checked
+        setIsChecked(checked)
+        if (checked) {
+            props.setTotal(props.total + props.price)
+        } else {
+            props.setTotal(props.total - props.price)
+        } 
+    }
+
     return(
         <StyledCard>
             <StyledCardBody className="header">
@@ -50,9 +66,10 @@ const AppCard = (props) => {
             <StyledCardBody>
                 <StyledCardText className="price">{props.price}</StyledCardText><p><b>€</b></p>
             </StyledCardBody>
-                
             <StyledCardBody>
-                <FormCheck type='checkbox' id={props.index} label={`  Add`}></FormCheck>
+                <FormCheck type='checkbox' id={props.index} label={`  Add`}
+                checked={isChecked} onChange={handleCheckboxChange}>
+                </FormCheck>
             </StyledCardBody>
         </StyledCard>
     )

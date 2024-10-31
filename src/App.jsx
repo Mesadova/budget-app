@@ -8,27 +8,38 @@ const Container = styled.div`
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  margin-top: 20px;
-  gap: 20px;
   border: solid;
   border-color: green;
+  gap: 30px;
 `
 
 const Header = styled.div`
     display: flex;
-    background-image: url("./src/assets/happyman.jpg");
+    width: 70%;
+    height: 12rem;
+    background-image: url("./src/assets/header.jpg");
     border-radius: 30px;
+    border: solid;
+    border-color: black;
+    border-width: 1px;
     overflow: hidden;
     font-family: Poppins;
     font-size: 30px;
     font-weight: bold;
     justify-content: center;
     align-items: center;
-    color: white;
-    height: 100px
+    color: black;
+`
+
+const Budget = styled.div`
+    margin-left: 35%;
+    font-family: Poppins;
+    font-size: 30px;
+    font-weight: bold;
 `
 
 const App = () => {
+  const [total, setTotal] = useState(0)
   const [count, setCount] = useState(0)
   const cardData = [
     {
@@ -50,15 +61,20 @@ const App = () => {
 
   return (
     <>
-      <Header>Get the best price</Header>
+      
         <Container>
+          <Header>Get the best quality</Header>
           {cardData.map((element, index) => {
             return(
             <AppCard key={index} 
-            title={element.title} description={element.description} price={element.price} index={index}>
+            title={element.title} description={element.description} setTotal={setTotal} total={total}
+            price={element.price} index={index}>
             </AppCard>
             )
           })}
+          <Budget>
+            <p>Budget price: {total}€</p>
+          </Budget>
         </Container>
     </>
   )
