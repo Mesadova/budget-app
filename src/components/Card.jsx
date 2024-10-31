@@ -1,33 +1,53 @@
 import styled from "styled-components"
-import { Card, CardBody, CardTitle, CardText, FormCheck } from "react-bootstrap"
+import { Card, CardBody, CardTitle, CardText, FormCheck, Row, Col } from "react-bootstrap"
 import { useState } from "react"
+import Parameters from './Parameters'
 
 const StyledCard = styled(Card)`
     display: flex;
+    flex-direction: column;
+    flex-wrap: nowrap;
+    min-width: 50%;
     padding: 20px;
     box-shadow: -0px 5px 5px 5px grey;
-    width: 40%;
-    min-width: 50%;
     border-radius: 30px;
     overflow: hidden;
     font-family: Poppins;
-    justify-content: space-between;
     background-color: white;
-    gap: 25px;
+    align-content: center;
+`
+
+const CardContainer = styled.div`
+  display: flex;
+  flex-grow: 1;
+  justify-content: space-around;
+  border: solid;
+  border-color: green;
+  gap: 30px;
+  &.parameters {
+        align-items: flex-end;
+        justify-content: flex-end;
+        align-content: flex-end;
+        flex-direction: column;
+
+    }
 `
 
 const StyledCardBody = styled(CardBody)`
+    border: solid;
+    border-color: blue;
     display: flex;
     font-size: 16px;
-    width: 30%;
     align-items: center;
     justify-content: center;
     align-content: center;
     &.header {
         align-items: flex-start;
         flex-direction: column;
-        width: 45%;
     }
+    &.parameters {
+    }
+    
 `
 
 const StyledCardTitle = styled(CardTitle)`
@@ -59,18 +79,28 @@ const AppCard = (props) => {
 
     return(
         <StyledCard>
-            <StyledCardBody className="header">
-                <StyledCardTitle>{props.title}</StyledCardTitle>
-                <StyledCardText>{props.description}</StyledCardText>
-            </StyledCardBody>
-            <StyledCardBody>
-                <StyledCardText className="price">{props.price}</StyledCardText><p><b>€</b></p>
-            </StyledCardBody>
-            <StyledCardBody>
-                <FormCheck type='checkbox' id={props.index} label={`  Add`}
-                checked={isChecked} onChange={handleCheckboxChange}>
-                </FormCheck>
-            </StyledCardBody>
+            <CardContainer>
+                    <StyledCardBody className="header">
+                        <StyledCardTitle>{props.title}</StyledCardTitle>
+                        <StyledCardText>{props.description}</StyledCardText>
+                    </StyledCardBody>
+                    <StyledCardBody>
+                        <StyledCardText className="price">{props.price}</StyledCardText><p><b>€</b></p>
+                    </StyledCardBody>
+                    <StyledCardBody>
+                        <FormCheck type='checkbox' id={props.index} label={`  Add`}
+                        checked={isChecked} onChange={handleCheckboxChange}>
+                        </FormCheck>
+                    </StyledCardBody>
+            </CardContainer>
+                {isChecked ? (
+                    <CardContainer className='parameters'>
+                        <StyledCardBody className='parameters'>
+                            <Parameters>
+                            </Parameters>
+                        </StyledCardBody>
+                    </CardContainer>
+                ) : (null)}
         </StyledCard>
     )
 }
