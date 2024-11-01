@@ -49,13 +49,18 @@ const Parameters = ({setTotal, total}) => {
                 </td>
                 <td width='30%' height='20%' align='right'>
                     <Form >
-                        <ButtonManage type="submit">-</ButtonManage>
+                        <ButtonManage type="submit"onClick={(event) => {
+                            event.preventDefault()
+                            setPages(pages-1)}}
+                            >-</ButtonManage>
                         <StyledInput
                             name="pages"
                             value={pages}
                             onChange={handleChangePages}
                         />
-                        <ButtonManage type="submit">+</ButtonManage>
+                        <ButtonManage type="submit"onClick={(event) => {
+                            event.preventDefault()
+                            setPages(pages+1)}}>+</ButtonManage>
                     </Form>
                 </td>
             </tr>
@@ -65,13 +70,17 @@ const Parameters = ({setTotal, total}) => {
                 </td>
                 <td width='25%' height='20%' align='right'>
                     <Form >
-                        <ButtonManage type="submit">-</ButtonManage>
+                        <ButtonManage type="submit" onClick={(event) => {
+                            event.preventDefault()
+                            setLang(lang-1)}}>-</ButtonManage>
                         <StyledInput
                             name="languages"
                             value={lang}
                             onChange={handleChangeLang}
                         />
-                        <ButtonManage type="submit">+</ButtonManage>
+                        <ButtonManage type="submit"onClick={(event) => {
+                            event.preventDefault()
+                            setLang(lang+1)} }>+</ButtonManage>
                     </Form>
                 </td>
             </tr>
