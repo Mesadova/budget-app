@@ -96,7 +96,7 @@ const AppCard = (props) => {
                 {isChecked ? (
                     <CardContainer className='parameters'>
                         <StyledCardBody className='parameters'>
-                            <Parameters>
+                            <Parameters total={props.total} setTotal={props.setTotal}>
                             </Parameters>
                         </StyledCardBody>
                     </CardContainer>

@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { Form, Button } from "react-bootstrap"
 import styled from "styled-components"
 
@@ -24,7 +25,21 @@ const ButtonManage = styled(Button)`
     color: #0F1111;
 `
 
-const Parameters = () => {
+const Parameters = ({setTotal, total}) => {
+    const [pages, setPages] = useState(1)
+    const [lang, setLang] = useState(2)
+
+    const handleChangePages = (event) => {
+        const a = parseInt(event.target.value, 10);
+        console.log(a)
+        setPages(a)
+        setTotal(total + ((a + lang)*30))
+    }
+    const handleChangeLang = (event) => {
+        const a = parseInt(event.target.value, 10);
+        setLang(a)
+        setTotal(total + ((pages + a)*30))
+    }
 
     return (
         <table>
@@ -35,7 +50,11 @@ const Parameters = () => {
                 <td width='30%' height='20%' align='right'>
                     <Form >
                         <ButtonManage type="submit">-</ButtonManage>
-                        <StyledInput name="" />
+                        <StyledInput
+                            name="pages"
+                            value={pages}
+                            onChange={handleChangePages}
+                        />
                         <ButtonManage type="submit">+</ButtonManage>
                     </Form>
                 </td>
@@ -47,7 +66,11 @@ const Parameters = () => {
                 <td width='25%' height='20%' align='right'>
                     <Form >
                         <ButtonManage type="submit">-</ButtonManage>
-                        <StyledInput name="" />
+                        <StyledInput
+                            name="languages"
+                            value={lang}
+                            onChange={handleChangeLang}
+                        />
                         <ButtonManage type="submit">+</ButtonManage>
                     </Form>
                 </td>
