@@ -26,61 +26,36 @@ const ButtonManage = styled(Button)`
 `
 
 const Parameters = (props) => {
-    const [pages, setPages] = useState(1)
-    const [lang, setLang] = useState(2)
+    const [planProps, setPlanProps] = useState({pages: 1, lang: 1})
 
-    const updatePages = (newPages) => {
-        console.log(props)
-        props.setBudgetPlans(prevItems => 
-            prevItems.map(item =>
-                item.id === props.id ? {...item, planPages: newPages} : item
+    const updatePlanProps = (key, value) => {
+        props.setBudgetPlans((prevItems) => 
+            prevItems.map((item) =>
+                item.id === props.id ? {...item,[key]: value } : item
         ))
     }
 
-    const updateLangs = (newLangs) => {
-        props.setBudgetPlans(prevItems => 
-            prevItems.map(item =>
-                item.id === props.id ? {...item, planLangs: newLangs} : item
-        ))
+    const handleChange = (key) => (event) => {
+        const newValue = parseInt(event.target.value, 10);
+        setPlanProps((prevPlanProps) => ({...prevPlanProps, [key]: newValue }))
+        updatePlanProps(key == "pages" ? "planPages" : "planLangs", newValue)
     }
 
-    const handleChangePages = (event) => {
-        const newPages = parseInt(event.target.value, 10);
-        setPages(newPages)
-        updatePages(newPages)
-    }
-
-    const handleChangeLang = (event) => {
-        const newLangs = parseInt(event.target.value, 10);
-        setLang(newLangs)
-        updateLangs(newLangs)
-    }
-
-    const addPage = (event) => {
+    const increment = (key) => (event) => {
         event.preventDefault()
-        const newPages = pages + 1
-        setPages(newPages)
-        updatePages(newPages)
+        setPlanProps((prevPlanProps) => {
+            const newValue = prevPlanProps[key] + 1
+            updatePlanProps(key === "pages" ? "planPages" : "planLangs", newValue)
+            return {...prevPlanProps, [key]: newValue}
+        })
     }
-
-    const addLang = (event) => {
+    const decrement = (key) => (event) => {
         event.preventDefault()
-        const newLangs = lang + 1
-        setLang(newLangs)
-        updateLangs(newLangs)
-    }
-    const delPage = (event) => {
-        event.preventDefault()
-        const newPages = pages - 1
-        setPages(newPages)
-        updatePages(newPages)
-    }
-
-    const delLang = (event) => {
-        event.preventDefault()
-        const newLangs = lang - 1
-        setLang(newLangs)
-        updateLangs(newLangs)
+        setPlanProps((prevPlanProps) => {
+            const newValue = prevPlanProps[key] - 1
+            updatePlanProps(key === "pages" ? "planPages" : "planLangs", newValue)
+            return {...prevPlanProps, [key]: newValue}
+        })
     }
 
     return (
@@ -91,14 +66,14 @@ const Parameters = (props) => {
                 </td>
                 <td width='30%' height='20%' align='right'>
                     <Form >
-                        <ButtonManage type="submit" onClick={delPage}
+                        <ButtonManage type="submit" onClick={decrement("pages")}
                             >-</ButtonManage>
                         <StyledInput
                             name="pages"
-                            value={pages}
-                            onChange={handleChangePages}
+                            value={planProps.pages}
+                            onChange={handleChange("pages")}
                         />
-                        <ButtonManage type="submit" onClick={addPage}
+                        <ButtonManage type="submit" onClick={increment("pages")}
                             >+</ButtonManage>
                     </Form>
                 </td>
@@ -109,13 +84,13 @@ const Parameters = (props) => {
                 </td>
                 <td width='25%' height='20%' align='right'>
                     <Form >
-                        <ButtonManage type="submit" onClick={delLang}>-</ButtonManage>
+                        <ButtonManage type="submit" onClick={decrement("lang")}>-</ButtonManage>
                         <StyledInput
                             name="languages"
-                            value={lang}
-                            onChange={handleChangeLang}
+                            value={planProps.lang}
+                            onChange={handleChange("lang")}
                         />
-                        <ButtonManage type="submit"onClick={addLang}>+</ButtonManage>
+                        <ButtonManage type="submit"onClick={increment("lang")}>+</ButtonManage>
                     </Form>
                 </td>
             </tr>

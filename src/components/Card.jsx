@@ -1,5 +1,5 @@
 import styled from "styled-components"
-import { Card, CardBody, CardTitle, CardText, FormCheck, Row, Col } from "react-bootstrap"
+import { Card, CardBody, CardTitle, CardText, FormCheck } from "react-bootstrap"
 import { useEffect, useState } from "react"
 import Parameters from './Parameters'
 
@@ -29,7 +29,6 @@ const CardContainer = styled.div`
         justify-content: flex-end;
         align-content: flex-end;
         flex-direction: column;
-
     }
 `
 
@@ -47,7 +46,6 @@ const StyledCardBody = styled(CardBody)`
     }
     &.parameters {
     }
-    
 `
 
 const StyledCardTitle = styled(CardTitle)`

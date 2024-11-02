@@ -14,33 +14,32 @@ const Container = styled.div`
 `
 
 const Header = styled.div`
-    display: flex;
-    width: 70%;
-    height: 12rem;
-    background-image: url("./src/assets/header.jpg");
-    border-radius: 30px;
-    border: solid;
-    border-color: black;
-    border-width: 1px;
-    overflow: hidden;
-    font-family: Poppins;
-    font-size: 30px;
-    font-weight: bold;
-    justify-content: center;
-    align-items: center;
-    color: black;
+  display: flex;
+  width: 70%;
+  height: 12rem;
+  background-image: url("./src/assets/header.jpg");
+  border-radius: 30px;
+  border: solid;
+  border-color: black;
+  border-width: 1px;
+  overflow: hidden;
+  font-family: Poppins;
+  font-size: 30px;
+  font-weight: bold;
+  justify-content: center;
+  align-items: center;
+  color: black;
 `
 
 const Budget = styled.div`
-    margin-left: 35%;
-    font-family: Poppins;
-    font-size: 30px;
-    font-weight: bold;
+  margin-left: 35%;
+  font-family: Poppins;
+  font-size: 30px;
+  font-weight: bold;
 `
 
 const App = () => {
   const [total, setTotal] = useState(0)
-  const [count, setCount] = useState(0)
   const [budgetPlans, setBudgetPlans] = useState([])
 
   const cardData = [
