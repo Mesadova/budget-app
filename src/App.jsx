@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import AppCard from './components/Card'
 import styled from 'styled-components'
 
@@ -41,6 +41,8 @@ const Budget = styled.div`
 const App = () => {
   const [total, setTotal] = useState(0)
   const [count, setCount] = useState(0)
+  const [budgetPlans, setBudgetPlans] = useState([])
+
   const cardData = [
     {
       title: 'Seo',
@@ -59,6 +61,16 @@ const App = () => {
     }
   ]
 
+  const calcTotal = () => {
+    const sum = budgetPlans.reduce((accumulator, currentValue) => 
+        accumulator + currentValue.planPrice + ((currentValue.planLangs + currentValue.planPages)*30), 0
+    )
+    console.log('calc total', sum)
+    setTotal(sum)
+}
+
+  
+
   return (
     <>
       
@@ -68,7 +80,8 @@ const App = () => {
             return(
             <AppCard key={index} 
             title={element.title} description={element.description} setTotal={setTotal} total={total}
-            price={element.price} index={index}>
+            price={element.price} index={index} budgetPlans={budgetPlans} setBudgetPlans={setBudgetPlans}
+            calcTotal={calcTotal}>
             </AppCard>
             )
           })}

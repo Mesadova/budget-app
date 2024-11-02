@@ -1,6 +1,6 @@
 import styled from "styled-components"
 import { Card, CardBody, CardTitle, CardText, FormCheck, Row, Col } from "react-bootstrap"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import Parameters from './Parameters'
 
 const StyledCard = styled(Card)`
@@ -67,15 +67,31 @@ const StyledCardText = styled(CardText)`
 const AppCard = (props) => {
     const [isChecked, setIsChecked] = useState(false)
 
+    useEffect(() => {
+        props.calcTotal()
+    }, [props.budgetPlans])
+
     const handleCheckboxChange = (e) => {
+        console.log(props.budgetPlans)
         const checked = e.target.checked
+        const newPlan = {
+            id: props.index,
+            planTitle: props.title,
+            planChecked: checked,
+            planPrice: props.price,
+            planPages: 1,
+            planLangs: 1,
+        }
         setIsChecked(checked)
         if (checked) {
-            props.setTotal(props.total + props.price)
+            const addedPlans = [...props.budgetPlans, newPlan]
+            props.setBudgetPlans(addedPlans)
         } else {
-            props.setTotal(props.total - props.price)
-        } 
+            const removePlans = props.budgetPlans.filter(element => element.planTitle !== newPlan.planTitle)
+            props.setBudgetPlans(removePlans)
+        }
     }
+
 
     return(
         <StyledCard>
@@ -96,7 +112,9 @@ const AppCard = (props) => {
                 {isChecked ? (
                     <CardContainer className='parameters'>
                         <StyledCardBody className='parameters'>
-                            <Parameters total={props.total} setTotal={props.setTotal}>
+                            <Parameters id={props.index} budgetPlans={props.budgetPlans} setBudgetPlans={props.setBudgetPlans}
+                            isChecked={isChecked}
+                            >
                             </Parameters>
                         </StyledCardBody>
                     </CardContainer>

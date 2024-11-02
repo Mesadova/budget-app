@@ -25,20 +25,62 @@ const ButtonManage = styled(Button)`
     color: #0F1111;
 `
 
-const Parameters = ({setTotal, total}) => {
+const Parameters = (props) => {
     const [pages, setPages] = useState(1)
     const [lang, setLang] = useState(2)
 
-    const handleChangePages = (event) => {
-        const a = parseInt(event.target.value, 10);
-        console.log(a)
-        setPages(a)
-        setTotal(total + ((a + lang)*30))
+    const updatePages = (newPages) => {
+        console.log(props)
+        props.setBudgetPlans(prevItems => 
+            prevItems.map(item =>
+                item.id === props.id ? {...item, planPages: newPages} : item
+        ))
     }
+
+    const updateLangs = (newLangs) => {
+        props.setBudgetPlans(prevItems => 
+            prevItems.map(item =>
+                item.id === props.id ? {...item, planLangs: newLangs} : item
+        ))
+    }
+
+    const handleChangePages = (event) => {
+        const newPages = parseInt(event.target.value, 10);
+        setPages(newPages)
+        updatePages(newPages)
+    }
+
     const handleChangeLang = (event) => {
-        const a = parseInt(event.target.value, 10);
-        setLang(a)
-        setTotal(total + ((pages + a)*30))
+        const newLangs = parseInt(event.target.value, 10);
+        setLang(newLangs)
+        updateLangs(newLangs)
+    }
+
+    const addPage = (event) => {
+        event.preventDefault()
+        const newPages = pages + 1
+        setPages(newPages)
+        updatePages(newPages)
+    }
+
+    const addLang = (event) => {
+        event.preventDefault()
+        const newLangs = lang + 1
+        setLang(newLangs)
+        updateLangs(newLangs)
+    }
+    const delPage = (event) => {
+        event.preventDefault()
+        const newPages = pages - 1
+        setPages(newPages)
+        updatePages(newPages)
+    }
+
+    const delLang = (event) => {
+        event.preventDefault()
+        const newLangs = lang - 1
+        setLang(newLangs)
+        updateLangs(newLangs)
     }
 
     return (
@@ -49,18 +91,15 @@ const Parameters = ({setTotal, total}) => {
                 </td>
                 <td width='30%' height='20%' align='right'>
                     <Form >
-                        <ButtonManage type="submit"onClick={(event) => {
-                            event.preventDefault()
-                            setPages(pages-1)}}
+                        <ButtonManage type="submit" onClick={delPage}
                             >-</ButtonManage>
                         <StyledInput
                             name="pages"
                             value={pages}
                             onChange={handleChangePages}
                         />
-                        <ButtonManage type="submit"onClick={(event) => {
-                            event.preventDefault()
-                            setPages(pages+1)}}>+</ButtonManage>
+                        <ButtonManage type="submit" onClick={addPage}
+                            >+</ButtonManage>
                     </Form>
                 </td>
             </tr>
@@ -70,17 +109,13 @@ const Parameters = ({setTotal, total}) => {
                 </td>
                 <td width='25%' height='20%' align='right'>
                     <Form >
-                        <ButtonManage type="submit" onClick={(event) => {
-                            event.preventDefault()
-                            setLang(lang-1)}}>-</ButtonManage>
+                        <ButtonManage type="submit" onClick={delLang}>-</ButtonManage>
                         <StyledInput
                             name="languages"
                             value={lang}
                             onChange={handleChangeLang}
                         />
-                        <ButtonManage type="submit"onClick={(event) => {
-                            event.preventDefault()
-                            setLang(lang+1)} }>+</ButtonManage>
+                        <ButtonManage type="submit"onClick={addLang}>+</ButtonManage>
                     </Form>
                 </td>
             </tr>
