@@ -1,68 +1,12 @@
-import styled from "styled-components"
-import { Card, CardBody, CardTitle, CardText, FormCheck } from "react-bootstrap"
+//import styled from "styled-components"
+
 import { useEffect, useState } from "react"
 import Parameters from './Parameters'
+import {StyledCardTitle, StyledCard, StyledCardBody, CardContainer, StyledCardText} from '../App'
+import { FormCheck } from "react-bootstrap"
 
-const StyledCard = styled(Card)`
-    display: flex;
-    flex-direction: column;
-    flex-wrap: nowrap;
-    min-width: 50%;
-    padding: 20px;
-    box-shadow: -0px 5px 5px 5px grey;
-    border-radius: 30px;
-    overflow: hidden;
-    font-family: Poppins;
-    background-color: white;
-    align-content: center;
-`
 
-const CardContainer = styled.div`
-  display: flex;
-  flex-grow: 1;
-  justify-content: space-around;
-  border: solid;
-  border-color: green;
-  gap: 30px;
-  &.parameters {
-        align-items: flex-end;
-        justify-content: flex-end;
-        align-content: flex-end;
-        flex-direction: column;
-    }
-`
-
-const StyledCardBody = styled(CardBody)`
-    border: solid;
-    border-color: blue;
-    display: flex;
-    font-size: 16px;
-    align-items: center;
-    justify-content: center;
-    align-content: center;
-    &.header {
-        align-items: flex-start;
-        flex-direction: column;
-    }
-    &.parameters {
-    }
-`
-
-const StyledCardTitle = styled(CardTitle)`
-    font-weight: bold;
-    margin-top: 10px;
-    font-size: 24px;
-`
-
-const StyledCardText = styled(CardText)`
-    font-size: 16px;
-    &.price {
-        font-weight: bold;
-        font-size: 30px;
-    }
-`
-
-const AppCard = (props) => {
+const AvailablePlans = (props) => {
     const [isChecked, setIsChecked] = useState(false)
 
     useEffect(() => {
@@ -70,7 +14,6 @@ const AppCard = (props) => {
     }, [props.budgetPlans])
 
     const handleCheckboxChange = (e) => {
-        console.log(props.budgetPlans)
         const checked = e.target.checked
         const newPlan = {
             id: props.index,
@@ -90,7 +33,6 @@ const AppCard = (props) => {
         }
     }
 
-
     return(
         <StyledCard>
             <CardContainer>
@@ -103,17 +45,14 @@ const AppCard = (props) => {
                     </StyledCardBody>
                     <StyledCardBody>
                         <FormCheck type='checkbox' id={props.index} label={`  Add`}
-                        checked={isChecked} onChange={handleCheckboxChange}>
-                        </FormCheck>
+                        checked={isChecked} onChange={handleCheckboxChange} />
                     </StyledCardBody>
             </CardContainer>
                 {isChecked ? (
                     <CardContainer className='parameters'>
                         <StyledCardBody className='parameters'>
-                            <Parameters id={props.index} budgetPlans={props.budgetPlans} setBudgetPlans={props.setBudgetPlans}
-                            isChecked={isChecked}
-                            >
-                            </Parameters>
+                            <Parameters id={props.index} budgetPlans={props.budgetPlans}
+                            setBudgetPlans={props.setBudgetPlans} />
                         </StyledCardBody>
                     </CardContainer>
                 ) : (null)}
@@ -121,4 +60,4 @@ const AppCard = (props) => {
     )
 }
 
-export default AppCard
+export default AvailablePlans
