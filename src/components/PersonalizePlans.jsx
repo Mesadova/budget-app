@@ -6,7 +6,7 @@ const PersonalizePlans = ({personData, total}) => {
     return(
         <StyledCard>
             <CardContainer className='personalizedPlan'>
-                <StyledCardBody className="header">
+                <StyledCardBody className="personalData">
                     {personData.name && <StyledCardTitle>{personData.name}</StyledCardTitle>}
                     {personData.telephone && <StyledCardText className='personalizedPlan'>{personData.telephone}</StyledCardText>}
                     {personData.email && <StyledCardText className='personalizedPlan'>{personData.email}</StyledCardText>}
@@ -18,8 +18,7 @@ const PersonalizePlans = ({personData, total}) => {
                         {Object.entries(personData).map(([key, value]) => (
                             typeof value === "object" && value !== null ? (
                                 Object.entries(value).map(([subKey, subValue]) => (
-                                    <li key={subKey}>{subValue.planTitle}
-                                     ({subValue.planPages} pages, {subValue.planLangs} languages)</li>
+                                    <li key={subKey}>{subValue.planTitle} ({subValue.planPages} pages, {subValue.planLangs} languages)</li>
                                 ))
                             ) : null
                         ))}
@@ -28,7 +27,7 @@ const PersonalizePlans = ({personData, total}) => {
                 </StyledCardBody>
                 <StyledCardBody className="header">
                     <StyledCardText className='personalizedTotal'>Total:</StyledCardText>
-                    <StyledCardText className='price'>{total} €</StyledCardText>
+                    {personData.total && <StyledCardText className='price'>{personData.total} €</StyledCardText>}
                 </StyledCardBody>
             </CardContainer>
         </StyledCard>   

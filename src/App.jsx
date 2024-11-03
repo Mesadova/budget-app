@@ -2,8 +2,16 @@ import { useState } from 'react'
 import { Card, CardBody, CardTitle, CardText, Form, Button} from "react-bootstrap"
 import AvailablePlans from './components/AvailablePlans'
 import BudgetForm from './components/BudgetForm'
-import styled from 'styled-components'
+import { styled, createGlobalStyle  } from 'styled-components'
 import PersonalizePlans from './components/PersonalizePlans'
+
+const GlobalStyle = createGlobalStyle`
+  body {
+    margin: 0;
+    font-family: 'Poppins';
+    background-color: black;
+  }
+`
 
 const Container = styled.div`
   display: flex;
@@ -12,7 +20,6 @@ const Container = styled.div`
   justify-content: center;
   align-items: center;
   border: solid;
-  border-color: green;
   gap: 30px;
 `
 
@@ -26,7 +33,6 @@ const Header = styled.div`
   border-color: black;
   border-width: 1px;
   overflow: hidden;
-  font-family: Poppins;
   font-size: 30px;
   font-weight: bold;
   justify-content: center;
@@ -36,7 +42,6 @@ const Header = styled.div`
 
 const Budget = styled.div`
   margin-left: 35%;
-  font-family: Poppins;
   font-size: 30px;
   font-weight: bold;
 `
@@ -45,8 +50,6 @@ export const CardContainer = styled.div`
     display: flex;
     flex-grow: 1;
     justify-content: space-around;
-    border: solid;
-    border-color: green;
     gap: 30px;
     margin-bottom: 14px;
     &.parameters {
@@ -76,7 +79,6 @@ export const StyledCard = styled(Card)`
     box-shadow: -0px 5px 5px 5px grey;
     border-radius: 30px;
     overflow: hidden;
-    font-family: Poppins;
     background-color: white;
     align-content: center;
     &.budgetForm {
@@ -96,8 +98,6 @@ export const StyledCard = styled(Card)`
 `
 
 export const StyledCardBody = styled(CardBody)`
-    border: solid;
-    border-color: blue;
     display: flex;
     font-size: 16px;
     align-items: center;
@@ -110,6 +110,11 @@ export const StyledCardBody = styled(CardBody)`
     &.budgetForm {
         gap: 20px;
         margin-bottom: 20px;
+    }
+    &.personalData {
+      width: 26%;
+      align-items: flex-start;
+      flex-direction: column;
     }
 `
 
@@ -173,7 +178,8 @@ const App = () => {
   const [total, setTotal] = useState(0)
   const [budgetPlans, setBudgetPlans] = useState([])
   const [isSubmitted, setIsSubmitted] = useState(false);
-  const [personData, setPersonData] = useState({ name: '', telephone: '', email: '', plans: '' })
+  const [personData, setPersonData] = useState({ name: '', telephone: '', email: '', plans: '', total: '' })
+  const [personalizedPlans, setPersonalizedPlans] = useState([])
 
   const cardData = [
     {
@@ -197,13 +203,14 @@ const App = () => {
     event.preventDefault()
     const newPersonData = event.target.value
     setPersonData((prevData) => ({...prevData, [key]: newPersonData}))
-    //updatePersonalData(key === "name" ? "personName" : (key === 'telephone' ? "personTelephone" : "personEmail"), newPersonData)
   }
 
   const createPersonalizePlan = () => {
     event.preventDefault()
     console.log('Created plan:', personData)
     setPersonData((prevData) => ({...prevData, ['plans']: budgetPlans}))
+    const newPersonalizedPlan = ({...personData, ['plans']: budgetPlans, ['total']: total})
+    setPersonalizedPlans(personalizedPlans.concat(newPersonalizedPlan))
     setIsSubmitted(true)
   }
 
@@ -215,7 +222,9 @@ const App = () => {
   }
 
   return (
+    
     <Container>
+      <GlobalStyle></GlobalStyle>
       <Header>Get the best quality</Header>
       {cardData.map((element, index) => {
         return(
@@ -232,7 +241,9 @@ const App = () => {
       <BudgetForm handlePersonalizePlan={handlePersonalizePlan} 
       createPersonalizePlan={createPersonalizePlan} personData={personData}></BudgetForm>
       {isSubmitted && (
-        <PersonalizePlans personData={personData} total={total}></PersonalizePlans>
+        personalizedPlans.map((plan, planIndex) => (
+          <PersonalizePlans key={planIndex} personData={plan}></PersonalizePlans>
+        ))
       )}
     </Container>
   )
