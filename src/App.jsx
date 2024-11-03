@@ -1,9 +1,10 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Card, CardBody, CardTitle, CardText, Form, Button} from "react-bootstrap"
 import AvailablePlans from './components/AvailablePlans'
 import BudgetForm from './components/BudgetForm'
 import { styled, createGlobalStyle  } from 'styled-components'
 import PersonalizePlans from './components/PersonalizePlans'
+import Parameters from './components/Parameters'
 
 const GlobalStyle = createGlobalStyle`
   body {
@@ -44,6 +45,7 @@ const Budget = styled.div`
   margin-left: 35%;
   font-size: 30px;
   font-weight: bold;
+  color: white;
 `
 
 export const CardContainer = styled.div`
@@ -180,6 +182,7 @@ const App = () => {
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [personData, setPersonData] = useState({ name: '', telephone: '', email: '', plans: '', total: '' })
   const [personalizedPlans, setPersonalizedPlans] = useState([])
+  const [isChecked, setIsChecked] = useState(false)
 
   const cardData = [
     {
@@ -212,14 +215,42 @@ const App = () => {
     const newPersonalizedPlan = ({...personData, ['plans']: budgetPlans, ['total']: total})
     setPersonalizedPlans(personalizedPlans.concat(newPersonalizedPlan))
     setIsSubmitted(true)
+    setBudgetPlans([])
+    setIsChecked(false);
   }
 
   const calcTotal = () => {
+    console.log(budgetPlans)
     const planSum = budgetPlans.reduce((accumulator, currentValue) => 
         accumulator + currentValue.planPrice + ((currentValue.planLangs + currentValue.planPages)*30), 0
     )
     setTotal(planSum)
   }
+
+  useEffect(() => {
+    calcTotal()
+  }, [budgetPlans])
+
+    const handleCheckboxChange = (title, price, index) => (e) => {
+        const checked = e.target.checked
+        const newPlan = {
+            id: index,
+            planTitle: title,
+            planChecked: checked,
+            planPrice: price,
+            planPages: 1,
+            planLangs: 1,
+        }
+        if (newPlan.planChecked) {
+            const addedPlans = [...budgetPlans, newPlan]
+            setBudgetPlans(addedPlans)
+            setIsChecked(true)
+        } else {
+            const removePlans = budgetPlans.filter(element => element.planTitle !== newPlan.planTitle)
+            setBudgetPlans(removePlans)
+            setIsChecked(false)
+        }
+    }
 
   return (
     
@@ -227,13 +258,32 @@ const App = () => {
       <GlobalStyle></GlobalStyle>
       <Header>Get the best quality</Header>
       {cardData.map((element, index) => {
-        return(
-          <AvailablePlans key={index} 
-          title={element.title} description={element.description} setTotal={setTotal} total={total}
-          price={element.price} index={index} budgetPlans={budgetPlans} setBudgetPlans={setBudgetPlans}
-          calcTotal={calcTotal}>
-          </AvailablePlans>
-        )
+        const isPlanChecked = budgetPlans.some(plan => plan.id === index && plan.planChecked);
+        return (
+          <StyledCard key={index}>
+            <CardContainer>
+              <AvailablePlans 
+                title={element.title} 
+                description={element.description} 
+                price={element.price} 
+                index={index}
+                isChecked={isPlanChecked} 
+                handleCheckboxChange={handleCheckboxChange} 
+              />
+            </CardContainer>
+            {isPlanChecked && (
+              <CardContainer className='parameters'>
+                <StyledCardBody className='parameters'>
+                  <Parameters 
+                    id={index} 
+                    budgetPlans={budgetPlans}
+                    setBudgetPlans={setBudgetPlans} 
+                  />
+                </StyledCardBody>
+              </CardContainer>
+            )}
+          </StyledCard>
+        );
       })}
       <Budget>
         <p>Budget price: {total}€</p>
