@@ -62,6 +62,9 @@ export const CardContainer = styled.div`
         align-content: flex-start;
         flex-direction: column;
     }
+    &.personalizedPlan {
+      justify-content: space-between;
+    }
 `
 
 export const StyledCard = styled(Card)`
@@ -88,7 +91,7 @@ export const StyledCard = styled(Card)`
         border-top: 5px dashed gray;
         border-radius: 280px;
         z-index: -1;
-}
+      }
     }
 `
 
@@ -112,15 +115,28 @@ export const StyledCardBody = styled(CardBody)`
 
 export const StyledCardTitle = styled(CardTitle)`
     font-weight: bold;
-    margin-top: 10px;
+    margin-top: 5px;
     font-size: 24px;
 `
 
 export const StyledCardText = styled(CardText)`
     font-size: 16px;
     &.price {
-        font-weight: bold;
-        font-size: 30px;
+      margin: 0px;
+      font-weight: bold;
+      font-size: 30px;
+    }
+    &.personalizedPlan {
+      margin: 2px;
+      font-size: 12px;
+      color: gray;
+    }
+    &.personalizedTotal {
+      margin: 0px;
+      align-self: center;
+      font-size: 20px;
+      font-weight: 600;
+      color: gray;
     }
 `
 
@@ -156,6 +172,8 @@ export const ButtonManage = styled(Button)`
 const App = () => {
   const [total, setTotal] = useState(0)
   const [budgetPlans, setBudgetPlans] = useState([])
+  const [isSubmitted, setIsSubmitted] = useState(false);
+  const [personData, setPersonData] = useState({ name: '', telephone: '', email: '', plans: '' })
 
   const cardData = [
     {
@@ -174,6 +192,20 @@ const App = () => {
       price: 500,
     }
   ]
+
+  const handlePersonalizePlan = (key) => (event) => {
+    event.preventDefault()
+    const newPersonData = event.target.value
+    setPersonData((prevData) => ({...prevData, [key]: newPersonData}))
+    //updatePersonalData(key === "name" ? "personName" : (key === 'telephone' ? "personTelephone" : "personEmail"), newPersonData)
+  }
+
+  const createPersonalizePlan = () => {
+    event.preventDefault()
+    console.log('Created plan:', personData)
+    setPersonData((prevData) => ({...prevData, ['plans']: budgetPlans}))
+    setIsSubmitted(true)
+  }
 
   const calcTotal = () => {
     const planSum = budgetPlans.reduce((accumulator, currentValue) => 
@@ -197,8 +229,11 @@ const App = () => {
       <Budget>
         <p>Budget price: {total}€</p>
       </Budget>
-      <BudgetForm total={total} budgetPlans={budgetPlans} ></BudgetForm>
-      <PersonalizePlans></PersonalizePlans>
+      <BudgetForm handlePersonalizePlan={handlePersonalizePlan} 
+      createPersonalizePlan={createPersonalizePlan} personData={personData}></BudgetForm>
+      {isSubmitted && (
+        <PersonalizePlans personData={personData} total={total}></PersonalizePlans>
+      )}
     </Container>
   )
 

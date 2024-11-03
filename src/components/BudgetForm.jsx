@@ -2,6 +2,7 @@ import { Button, Form } from 'react-bootstrap'
 import {StyledCardTitle, StyledCard, StyledCardBody, CardContainer, StyledInput} from '../App'
 import styled from 'styled-components'
 import PersonalizePlans from './PersonalizePlans'
+import { useState } from 'react'
 
 const ButtonBudgetForm = styled(Button)`
     outline: 0;
@@ -18,17 +19,9 @@ const ButtonBudgetForm = styled(Button)`
     font-family: 'Poppins';
 `
 
-const BudgetForm = ({total, budgetPlans}) => {
+const BudgetForm = ({ handlePersonalizePlan, createPersonalizePlan, personData}) => {
 
-    const handlePersonalizePlan = (event) => {
-        event.preventDefault()
-        return(
-            <div>
-        <PersonalizePlans></PersonalizePlans>
-        </div>)
-
-    }
-    
+     
     return(
         <StyledCard className='budgetForm'>
             <CardContainer className='budgetForm'>
@@ -36,11 +29,14 @@ const BudgetForm = ({total, budgetPlans}) => {
                         <StyledCardTitle>Personalize your own plan</StyledCardTitle>
                     </StyledCardBody>
             </CardContainer>
-            <Form onSubmit={handlePersonalizePlan}>
+            <Form onSubmit={createPersonalizePlan}>
                 <StyledCardBody className='budgetForm'>
-                        <StyledInput className='budgetForm' placeholder='Name'  />  
-                        <StyledInput className='budgetForm' placeholder='Telephone'  /> 
-                        <StyledInput className='budgetForm' placeholder='Email'  /> 
+                        <StyledInput className='budgetForm' placeholder='Name' 
+                        value={personData.name} onChange={handlePersonalizePlan('name')}/>  
+                        <StyledInput className='budgetForm' placeholder='Telephone' 
+                        value={personData.telephone} onChange={handlePersonalizePlan('telephone')}/> 
+                        <StyledInput className='budgetForm' placeholder='Email' 
+                        value={personData.email} onChange={handlePersonalizePlan('email')}/> 
                         <ButtonBudgetForm  type="submit" >Ask plan price</ButtonBudgetForm>
                 </StyledCardBody>
             </Form>
