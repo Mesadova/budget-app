@@ -1,8 +1,6 @@
 import { Button, Form } from 'react-bootstrap'
 import {StyledCardTitle, StyledCard, StyledCardBody, CardContainer, StyledInput} from '../App'
 import styled from 'styled-components'
-import PersonalizePlans from './PersonalizePlans'
-import { useState } from 'react'
 
 const ButtonBudgetForm = styled(Button)`
     outline: 0;
@@ -20,8 +18,6 @@ const ButtonBudgetForm = styled(Button)`
 `
 
 const BudgetForm = ({ handlePersonalizePlan, createPersonalizePlan, personData}) => {
-
-     
     return(
         <StyledCard className='budgetForm'>
             <CardContainer className='budgetForm'>
@@ -42,8 +38,6 @@ const BudgetForm = ({ handlePersonalizePlan, createPersonalizePlan, personData})
             </Form>
         </StyledCard>
     )
-
-
 }
 
 export default BudgetForm

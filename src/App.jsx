@@ -178,12 +178,10 @@ export const ButtonManage = styled(Button)`
 
 const App = () => {
   const [total, setTotal] = useState(0)
-  const [budgetPlans, setBudgetPlans] = useState([])
   const [isSubmitted, setIsSubmitted] = useState(false);
-  const [personData, setPersonData] = useState({ name: '', telephone: '', email: '', plans: '', total: '' })
+  const [budgetPlans, setBudgetPlans] = useState([])
   const [personalizedPlans, setPersonalizedPlans] = useState([])
-  const [isChecked, setIsChecked] = useState(false)
-
+  const [personData, setPersonData] = useState({ name: '', telephone: '', email: '', plans: '', total: '' })
   const cardData = [
     {
       title: 'Seo',
@@ -201,6 +199,17 @@ const App = () => {
       price: 500,
     }
   ]
+  
+  useEffect(() => {
+    calcTotal()
+  }, [budgetPlans])
+
+  const calcTotal = () => {
+    const planSum = budgetPlans.reduce((accumulator, currentValue) => 
+        accumulator + currentValue.planPrice + ((currentValue.planLangs + currentValue.planPages) * 30), 0
+    )
+    setTotal(planSum)
+  }
 
   const handlePersonalizePlan = (key) => (event) => {
     event.preventDefault()
@@ -210,50 +219,33 @@ const App = () => {
 
   const createPersonalizePlan = () => {
     event.preventDefault()
-    console.log('Created plan:', personData)
     setPersonData((prevData) => ({...prevData, ['plans']: budgetPlans}))
     const newPersonalizedPlan = ({...personData, ['plans']: budgetPlans, ['total']: total})
     setPersonalizedPlans(personalizedPlans.concat(newPersonalizedPlan))
     setIsSubmitted(true)
     setBudgetPlans([])
-    setIsChecked(false);
   }
 
-  const calcTotal = () => {
-    console.log(budgetPlans)
-    const planSum = budgetPlans.reduce((accumulator, currentValue) => 
-        accumulator + currentValue.planPrice + ((currentValue.planLangs + currentValue.planPages)*30), 0
-    )
-    setTotal(planSum)
-  }
-
-  useEffect(() => {
-    calcTotal()
-  }, [budgetPlans])
-
-    const handleCheckboxChange = (title, price, index) => (e) => {
-        const checked = e.target.checked
-        const newPlan = {
-            id: index,
-            planTitle: title,
-            planChecked: checked,
-            planPrice: price,
-            planPages: 1,
-            planLangs: 1,
-        }
-        if (newPlan.planChecked) {
-            const addedPlans = [...budgetPlans, newPlan]
-            setBudgetPlans(addedPlans)
-            setIsChecked(true)
-        } else {
-            const removePlans = budgetPlans.filter(element => element.planTitle !== newPlan.planTitle)
-            setBudgetPlans(removePlans)
-            setIsChecked(false)
-        }
+  const handleCheckboxChange = (title, price, index) => (e) => {
+    const checked = e.target.checked
+    const newPlan = {
+        id: index,
+        planTitle: title,
+        planChecked: checked,
+        planPrice: price,
+        planPages: 1,
+        planLangs: 1,
     }
+    if (newPlan.planChecked) {
+        const addedPlans = [...budgetPlans, newPlan]
+        setBudgetPlans(addedPlans)
+    } else {
+        const removePlans = budgetPlans.filter(element => element.planTitle !== newPlan.planTitle)
+        setBudgetPlans(removePlans)
+    }
+  }
 
   return (
-    
     <Container>
       <GlobalStyle></GlobalStyle>
       <Header>Get the best quality</Header>
@@ -263,33 +255,29 @@ const App = () => {
           <StyledCard key={index}>
             <CardContainer>
               <AvailablePlans 
-                title={element.title} 
-                description={element.description} 
-                price={element.price} 
-                index={index}
-                isChecked={isPlanChecked} 
-                handleCheckboxChange={handleCheckboxChange} 
+                title={element.title} description={element.description} price={element.price} index={index}
+                isPlanChecked={isPlanChecked} handleCheckboxChange={handleCheckboxChange} 
               />
             </CardContainer>
             {isPlanChecked && (
               <CardContainer className='parameters'>
                 <StyledCardBody className='parameters'>
                   <Parameters 
-                    id={index} 
-                    budgetPlans={budgetPlans}
-                    setBudgetPlans={setBudgetPlans} 
+                    id={index} budgetPlans={budgetPlans} setBudgetPlans={setBudgetPlans} 
                   />
                 </StyledCardBody>
               </CardContainer>
             )}
           </StyledCard>
-        );
+        )
       })}
       <Budget>
         <p>Budget price: {total}€</p>
       </Budget>
-      <BudgetForm handlePersonalizePlan={handlePersonalizePlan} 
-      createPersonalizePlan={createPersonalizePlan} personData={personData}></BudgetForm>
+      <BudgetForm 
+        handlePersonalizePlan={handlePersonalizePlan} createPersonalizePlan={createPersonalizePlan} 
+        personData={personData}>
+      </BudgetForm>
       {isSubmitted && (
         personalizedPlans.map((plan, planIndex) => (
           <PersonalizePlans key={planIndex} personData={plan}></PersonalizePlans>
@@ -297,7 +285,6 @@ const App = () => {
       )}
     </Container>
   )
-
 }
 
 export default App

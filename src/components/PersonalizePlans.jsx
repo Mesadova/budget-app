@@ -1,7 +1,6 @@
-
 import {StyledCardTitle, StyledCard, StyledCardBody, CardContainer, StyledCardText} from '../App'
 
-const PersonalizePlans = ({personData, total}) => {
+const PersonalizePlans = ({personData}) => {
     
     return(
         <StyledCard>

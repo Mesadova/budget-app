@@ -2,7 +2,6 @@ import { useState } from "react";
 import { Form } from "react-bootstrap"
 import {ButtonManage, StyledInput} from '../App'
 
-
 const Parameters = (props) => {
     const [planProps, setPlanProps] = useState({pages: 1, lang: 1})
 
