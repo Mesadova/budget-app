@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { Card, CardBody, CardTitle, CardText, Form, Button} from "react-bootstrap"
+import { Form, Button} from "react-bootstrap"
 import AvailablePlans from './components/AvailablePlans'
 import BudgetForm from './components/BudgetForm'
 import { styled, createGlobalStyle  } from 'styled-components'
@@ -40,6 +40,10 @@ const Header = styled.div`
   justify-content: center;
   align-items: center;
   color: black;
+  &.start {
+    justify-content: flex-start;
+    align-items: flex-start;
+  }
 `
 
 const Budget = styled.div`
@@ -53,35 +57,13 @@ const Budget = styled.div`
   }
 `
 
-export const CardContainer = styled.div`
+export const StyledCard = styled.div`
     display: flex;
-    flex-grow: 1;
-    justify-content: space-around;
-    gap: 30px;
-    margin-bottom: 14px;
-    &.parameters {
-        align-items: flex-end;
-        justify-content: flex-end;
-        align-content: flex-end;
-        flex-direction: column;
-        margin-bottom: 0px;
-    }
-    &.budgetForm {
-        align-items: flex-start;
-        justify-content: flex-start;
-        align-content: flex-start;
-        flex-direction: column;
-    }
-    &.personalizedPlan {
-      justify-content: space-between;
-    }
-`
-
-export const StyledCard = styled(Card)`
-    display: flex;
+    border: solid;
+    border-color: red;
     flex-direction: column;
     flex-wrap: nowrap;
-    min-width: 50%;
+    min-width: 45%;
     padding: 20px;
     box-shadow: -0px 5px 5px 5px grey;
     border-radius: 30px;
@@ -99,36 +81,84 @@ export const StyledCard = styled(Card)`
         z-index: -1;
       }
     }
+    &.personalizedPlanCard {
+      height: 100%;
+      
+    }
 `
 
-export const StyledCardBody = styled(CardBody)`
+export const CardContainer = styled.div`
     display: flex;
+    border: solid;
+    border-color: green;
+    flex-grow: 1;
+    justify-content: space-around;
+    gap: 30px;
+    margin-bottom: 14px;
+    &.parameters {
+      align-items: flex-end;
+      justify-content: flex-end;
+      align-content: flex-end;
+      flex-direction: column;
+      margin-bottom: 0px;
+    }
+    &.budgetForm {
+      align-items: flex-start;
+      justify-content: flex-start;
+      align-content: flex-start;
+      flex-direction: column;
+    }
+    &.personalizedPlan {
+      display: grid;
+      gap: 0;
+      margin: 0;
+      padding: 0;
+      height: 150px;
+      grid-template-columns: 290px 1fr 110px;
+    }
+`
+
+export const StyledCardBody = styled.div`
+    display: flex;
+    border: solid;
+    border-color: blue;
     font-size: 16px;
     align-items: center;
     justify-content: center;
-    align-content: center;
     &.header {
-        align-items: flex-start;
-        flex-direction: column;
+      align-items: center;
+      flex-direction: column;
+    }
+    &.headerStart {
+      align-items: flex-start;
+      justify-content: flex-start;
+      flex-direction: column;
     }
     &.budgetForm {
-        gap: 20px;
-        margin-bottom: 20px;
+      gap: 20px;
+      margin-bottom: 20px;
     }
     &.personalData {
-      width: 26%;
+      flex-wrap: wrap;
+      align-items: flex-start;
+      flex-direction: column;
+      max-width: 15%;
+    }
+    &.contractedServices {
+      flex-wrap: wrap;
       align-items: flex-start;
       flex-direction: column;
     }
 `
 
-export const StyledCardTitle = styled(CardTitle)`
+export const StyledCardTitle = styled.p`
     font-weight: bold;
     margin-top: 5px;
     font-size: 24px;
+    margin-bottom: 0;
 `
 
-export const StyledCardText = styled(CardText)`
+export const StyledCardText = styled.p`
     font-size: 16px;
     &.price {
       margin: 0px;
@@ -146,6 +176,12 @@ export const StyledCardText = styled(CardText)`
       font-size: 20px;
       font-weight: 600;
       color: gray;
+    }
+      &.contractedPlans {
+      margin: 0;
+      padding: 0;
+      align-self: start;
+      font-size: 14px;
     }
 `
 

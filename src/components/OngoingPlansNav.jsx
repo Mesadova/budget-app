@@ -65,20 +65,20 @@ const OngoingPlansNav = ({setPersonalizedPlans, personalizedPlans, setFilteredPl
         if (key === 'reSort') {
             mapped.sort((a, b) => {
                 if (a.value > b.value) {
-                    return -1;
+                    return 1;
                 }
                 if (a.value < b.value) {
-                    return 1;
+                    return -1;
                 }
                 return 0;
             })
         } else {
             mapped.sort((a, b) => {
                 if (a.value > b.value) {
-                    return 1;
+                    return -1;
                 }
                 if (a.value < b.value) {
-                    return -1;
+                    return 1;
                 }
                 return 0;
             })
@@ -98,16 +98,7 @@ const OngoingPlansNav = ({setPersonalizedPlans, personalizedPlans, setFilteredPl
         } else {
             setFilteredPlans(null)
         } 
-      }
-
-      const Filter = (props) => {
-        return(
-          <div>
-                filter shown with: <input value={props.value} onChange={props.onChange}/>
-          </div>
-        )
-      }
-
+    }
 
     return(
         <OngoingNav>

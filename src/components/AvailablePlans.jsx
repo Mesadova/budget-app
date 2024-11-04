@@ -4,7 +4,7 @@ import { FormCheck } from "react-bootstrap"
 const AvailablePlans = ({title, description, price, index, isPlanChecked, handleCheckboxChange}) => {
     return(
         <CardContainer>
-            <StyledCardBody className="header">
+            <StyledCardBody className="headerStart">
                 <StyledCardTitle>{title}</StyledCardTitle>
                 <StyledCardText>{description}</StyledCardText>
             </StyledCardBody>
