@@ -3,10 +3,10 @@ import { Form } from "react-bootstrap"
 import {ButtonManage, StyledInput} from '../App'
 
 const Parameters = (props) => {
-    const [planProps, setPlanProps] = useState({pages: 1, lang: 1})
+    const [planProps, setPlanProps] = useState({pages: 1, lang: 2})
 
     const updatePlanProps = (key, value) => {
-        props.setBudgetPlans((prevItems) => 
+        props.setSelectedPlans((prevItems) => 
             prevItems.map((item) =>
                 item.id === props.id ? {...item,[key]: value } : item
         ))

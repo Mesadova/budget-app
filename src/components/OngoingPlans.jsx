@@ -1,23 +1,27 @@
 import {StyledCardTitle, StyledCard, StyledCardBody, CardContainer, StyledCardText} from '../App'
 
-const PersonalizePlans = ({personData}) => {
-    
+const OngoingPlans = ({personData = {} }) => {
+    const { name, telephone, email, total, ...services } = personData
+
     return(
         <StyledCard>
             <CardContainer className='personalizedPlan'>
                 <StyledCardBody className="personalData">
-                    {personData.name && <StyledCardTitle>{personData.name}</StyledCardTitle>}
-                    {personData.telephone && <StyledCardText className='personalizedPlan'>{personData.telephone}</StyledCardText>}
-                    {personData.email && <StyledCardText className='personalizedPlan'>{personData.email}</StyledCardText>}
+                    {name && <StyledCardTitle>{name}</StyledCardTitle>}
+                    {telephone && <StyledCardText className='personalizedPlan'>{telephone}</StyledCardText>}
+                    {email && <StyledCardText className='personalizedPlan'>{email}</StyledCardText>}
                 </StyledCardBody>
                 <StyledCardBody>
                     <StyledCardText>
                         Contracted services:
                         <ul>
-                        {Object.entries(personData).map(([key, value]) => (
+                        {Object.entries(services).map(([key, value]) => (
                             typeof value === "object" && value !== null ? (
                                 Object.entries(value).map(([subKey, subValue]) => (
-                                    <li key={subKey}>{subValue.planTitle} ({subValue.planPages} pages, {subValue.planLangs} languages)</li>
+                                    <li key={subKey}>
+                                        {subValue.planTitle} 
+                                        {subValue.planPages !== null ? ` (${subValue.planPages} pages, ${subValue.planLangs} languages)` : ''}
+                                    </li>
                                 ))
                             ) : null
                         ))}
@@ -26,11 +30,11 @@ const PersonalizePlans = ({personData}) => {
                 </StyledCardBody>
                 <StyledCardBody className="header">
                     <StyledCardText className='personalizedTotal'>Total:</StyledCardText>
-                    {personData.total && <StyledCardText className='price'>{personData.total} €</StyledCardText>}
+                    {total && <StyledCardText className='price'>{total} €</StyledCardText>}
                 </StyledCardBody>
             </CardContainer>
         </StyledCard>   
     )
 }
 
-export default PersonalizePlans
+export default OngoingPlans

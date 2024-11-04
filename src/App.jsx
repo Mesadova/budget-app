@@ -3,8 +3,9 @@ import { Card, CardBody, CardTitle, CardText, Form, Button} from "react-bootstra
 import AvailablePlans from './components/AvailablePlans'
 import BudgetForm from './components/BudgetForm'
 import { styled, createGlobalStyle  } from 'styled-components'
-import PersonalizePlans from './components/PersonalizePlans'
+import OngoingPlans from './components/OngoingPlans'
 import Parameters from './components/Parameters'
+import OngoingPlansNav from './components/OngoingPlansNav.jsx'
 
 const GlobalStyle = createGlobalStyle`
   body {
@@ -46,6 +47,10 @@ const Budget = styled.div`
   font-size: 30px;
   font-weight: bold;
   color: white;
+  &.onGoing {
+    margin-left: -35%;
+    margin-bottom: -3%;
+  }
 `
 
 export const CardContainer = styled.div`
@@ -84,13 +89,10 @@ export const StyledCard = styled(Card)`
     background-color: white;
     align-content: center;
     &.budgetForm {
-      margin-bottom: 160px;
+      margin-bottom: 120px;
       &:after {
         content: "";
-        position: absolute;
-        top: 153%;
-        left: 0;
-        right: 0;
+        position: relative;
         height: 0.5em;
         border-top: 5px dashed gray;
         border-radius: 280px;
@@ -159,6 +161,11 @@ export const StyledInput = styled(Form.Control)`
   &.budgetForm {
     text-align: start;
   }
+  &.navPlans {
+    text-align: start;
+    height: 25px;
+    width: 70%;
+  }
 `
 
 export const ButtonManage = styled(Button)`
@@ -176,36 +183,26 @@ export const ButtonManage = styled(Button)`
     color: #0F1111;
 `
 
+
+
 const App = () => {
   const [total, setTotal] = useState(0)
   const [isSubmitted, setIsSubmitted] = useState(false);
-  const [budgetPlans, setBudgetPlans] = useState([])
+  const [selectedPlans, setSelectedPlans] = useState([])
   const [personalizedPlans, setPersonalizedPlans] = useState([])
   const [personData, setPersonData] = useState({ name: '', telephone: '', email: '', plans: '', total: '' })
   const cardData = [
-    {
-      title: 'Seo',
-      description: 'Programming of a full responsive web design.',
-      price: 300,
-    },
-    {
-      title: 'Ads',
-      description: 'Programming of a full responsive web design.',
-      price: 400,
-    },
-    {
-      title: 'Web',
-      description: 'Programming of a full responsive web design.',
-      price: 500,
-    }
+    {title: 'Seo', description: 'Programming of a full responsive web design.', price: 300},
+    {title: 'Ads', description: 'Programming of a full responsive web design.', price: 400},
+    {title: 'Web', description: 'Programming of a full responsive web design.', price: 500}
   ]
-  
+
   useEffect(() => {
     calcTotal()
-  }, [budgetPlans])
+  }, [selectedPlans])
 
   const calcTotal = () => {
-    const planSum = budgetPlans.reduce((accumulator, currentValue) => 
+    const planSum = selectedPlans.reduce((accumulator, currentValue) => 
         accumulator + currentValue.planPrice + ((currentValue.planLangs + currentValue.planPages) * 30), 0
     )
     setTotal(planSum)
@@ -217,31 +214,48 @@ const App = () => {
     setPersonData((prevData) => ({...prevData, [key]: newPersonData}))
   }
 
-  const createPersonalizePlan = () => {
+  const createPersonalizePlan = (event) => {
     event.preventDefault()
-    setPersonData((prevData) => ({...prevData, ['plans']: budgetPlans}))
-    const newPersonalizedPlan = ({...personData, ['plans']: budgetPlans, ['total']: total})
-    setPersonalizedPlans(personalizedPlans.concat(newPersonalizedPlan))
-    setIsSubmitted(true)
-    setBudgetPlans([])
+    if (selectedPlans.length !== 0) {
+      setPersonData((prevData) => ({...prevData, ['plans']: selectedPlans}))
+      const newPersonalizedPlan = ({...personData, ['plans']: selectedPlans, ['total']: total,
+                                  ['date']: `${new Date().getFullYear()}/${String(new Date().getMonth() + 1).padStart(2, '0')}/${String(new Date().getDate()).padStart(2, '0')} ${String(new Date().getHours()).padStart(2, '0')}:${String(new Date().getMinutes()).padStart(2, '0')}`})
+      setPersonalizedPlans(personalizedPlans.concat(newPersonalizedPlan))
+      setIsSubmitted(true)
+      setSelectedPlans([])
+    } else {
+      console.log('select a plan')
+    }
   }
 
   const handleCheckboxChange = (title, price, index) => (e) => {
+    let newPlan;
     const checked = e.target.checked
-    const newPlan = {
+    if (title === "Web") {
+      newPlan = {
         id: index,
         planTitle: title,
         planChecked: checked,
         planPrice: price,
         planPages: 1,
-        planLangs: 1,
+        planLangs: 2,
+      }
+    } else {
+      newPlan = {
+        id: index,
+        planTitle: title,
+        planChecked: checked,
+        planPrice: price,
+        planPages: null,
+        planLangs: null,
+      }
     }
     if (newPlan.planChecked) {
-        const addedPlans = [...budgetPlans, newPlan]
-        setBudgetPlans(addedPlans)
+        const addedPlans = [...selectedPlans, newPlan]
+        setSelectedPlans(addedPlans)
     } else {
-        const removePlans = budgetPlans.filter(element => element.planTitle !== newPlan.planTitle)
-        setBudgetPlans(removePlans)
+        const removePlans = selectedPlans.filter(element => element.planTitle !== newPlan.planTitle)
+        setSelectedPlans(removePlans)
     }
   }
 
@@ -250,7 +264,7 @@ const App = () => {
       <GlobalStyle></GlobalStyle>
       <Header>Get the best quality</Header>
       {cardData.map((element, index) => {
-        const isPlanChecked = budgetPlans.some(plan => plan.id === index && plan.planChecked);
+        const isPlanChecked = selectedPlans.some(plan => plan.id === index && plan.planChecked)
         return (
           <StyledCard key={index}>
             <CardContainer>
@@ -259,11 +273,11 @@ const App = () => {
                 isPlanChecked={isPlanChecked} handleCheckboxChange={handleCheckboxChange} 
               />
             </CardContainer>
-            {isPlanChecked && (
+            {isPlanChecked && index === 2 && (
               <CardContainer className='parameters'>
                 <StyledCardBody className='parameters'>
                   <Parameters 
-                    id={index} budgetPlans={budgetPlans} setBudgetPlans={setBudgetPlans} 
+                    id={index} selectedPlans={selectedPlans} setSelectedPlans={setSelectedPlans} 
                   />
                 </StyledCardBody>
               </CardContainer>
@@ -278,9 +292,13 @@ const App = () => {
         handlePersonalizePlan={handlePersonalizePlan} createPersonalizePlan={createPersonalizePlan} 
         personData={personData}>
       </BudgetForm>
+      <Budget className='onGoing'>
+        <p>Ongoing plans:</p>
+      </Budget>
+      <OngoingPlansNav personalizedPlans={personalizedPlans} setPersonalizedPlans={setPersonalizedPlans}></OngoingPlansNav>
       {isSubmitted && (
         personalizedPlans.map((plan, planIndex) => (
-          <PersonalizePlans key={planIndex} personData={plan}></PersonalizePlans>
+          <OngoingPlans key={planIndex} personData={plan}></OngoingPlans>
         ))
       )}
     </Container>
