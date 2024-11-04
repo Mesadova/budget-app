@@ -24,7 +24,7 @@ const ButtonNav = styled(Button)`
     font-family: 'Poppins';
 `
 
-const OngoingPlansNav = ({setPersonalizedPlans, personalizedPlans}) => {
+const OngoingPlansNav = ({setPersonalizedPlans, personalizedPlans, setFilteredPlans}) => {
 
     const sortByPrice = () => {
         return personalizedPlans.map((v, i) => {
@@ -88,9 +88,30 @@ const OngoingPlansNav = ({setPersonalizedPlans, personalizedPlans}) => {
         setPersonalizedPlans(result)
     }
 
+    const handleFilterChange = (event) => {
+        if (event.target.value !== '') {
+            const updatedSearch = event.target.value
+            const re = new RegExp('^' + updatedSearch, 'i')
+            const filteredPersons = personalizedPlans.filter((person) => person.name.search(re) != -1)
+            console.log(filteredPersons)
+            setFilteredPlans(filteredPersons)
+        } else {
+            setFilteredPlans(null)
+        } 
+      }
+
+      const Filter = (props) => {
+        return(
+          <div>
+                filter shown with: <input value={props.value} onChange={props.onChange}/>
+          </div>
+        )
+      }
+
+
     return(
         <OngoingNav>
-            <StyledInput className='navPlans' placeholder='Search...'/>
+            <StyledInput className='navPlans' placeholder='Search...' onChange={handleFilterChange}/>
             <ButtonNav onClick={sortPlans('date')}>
                 <i className="bi bi-calendar-week"></i> Date</ButtonNav>
             <ButtonNav onClick={sortPlans('price')}>

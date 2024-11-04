@@ -187,6 +187,7 @@ export const ButtonManage = styled(Button)`
 
 const App = () => {
   const [total, setTotal] = useState(0)
+  const [filteredPlans, setFilteredPlans] = useState(null)
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [selectedPlans, setSelectedPlans] = useState([])
   const [personalizedPlans, setPersonalizedPlans] = useState([])
@@ -295,12 +296,12 @@ const App = () => {
       <Budget className='onGoing'>
         <p>Ongoing plans:</p>
       </Budget>
-      <OngoingPlansNav personalizedPlans={personalizedPlans} setPersonalizedPlans={setPersonalizedPlans}></OngoingPlansNav>
-      {isSubmitted && (
-        personalizedPlans.map((plan, planIndex) => (
-          <OngoingPlans key={planIndex} personData={plan}></OngoingPlans>
-        ))
-      )}
+      <OngoingPlansNav filteredPlans={filteredPlans} setFilteredPlans={setFilteredPlans}
+      personalizedPlans={personalizedPlans} setPersonalizedPlans={setPersonalizedPlans}></OngoingPlansNav>
+      {isSubmitted ? (filteredPlans ? (
+        filteredPlans.map((plan, planIndex) => (<OngoingPlans key={planIndex} personData={plan}></OngoingPlans>))
+      ) : (personalizedPlans.map((plan, planIndex) => (<OngoingPlans key={planIndex} personData={plan}></OngoingPlans>))
+      )) : (null)}
     </Container>
   )
 }
