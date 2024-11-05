@@ -5,9 +5,9 @@ import 'bootstrap-icons/font/bootstrap-icons.css'
 
 export const OngoingNav = styled.div`
   display: flex;
-  width: 35%;
+  width: 30%;
   margin-top: 0px;
-  margin-left: 15%;
+  margin-left: 10%;
   gap: 7px;
 `
 const ButtonNav = styled(Button)`
@@ -62,7 +62,7 @@ const OngoingPlansNav = ({setPersonalizedPlans, personalizedPlans, setFilteredPl
                 mapped = sortByDate()
                 break;
         }
-        if (key === 'reSort') {
+        if (key === 'reSort' | key === 'name') {
             mapped.sort((a, b) => {
                 if (a.value > b.value) {
                     return 1;

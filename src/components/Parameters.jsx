@@ -1,14 +1,35 @@
 import { useState } from "react";
-import { Form } from "react-bootstrap"
-import {ButtonManage, StyledInput} from '../App'
+import {StyledForm, StyledInput, StyledCardText} from '../App'
+import styled from "styled-components"
 
-const Parameters = (props) => {
+export const HelpButtonModal = styled.button`
+    display: flex;
+    justify-content: center;
+    align-content: flex-start;
+    align-items: center;
+    border-radius: 100px;
+    border-color: white;
+    color: white;
+    width: 32px;
+    height: 32px;
+    margin-left: 14px;
+    background-color: blue;
+    &:hover {
+        background-color: green;
+    }
+`
+
+const iconStyle = {
+    fontSize: '28px',
+}
+
+const Parameters = ({setShowModalLangs, setShowModalPages, setSelectedPlans, id}) => {
     const [planProps, setPlanProps] = useState({pages: 1, lang: 2})
 
     const updatePlanProps = (key, value) => {
-        props.setSelectedPlans((prevItems) => 
+        setSelectedPlans((prevItems) => 
             prevItems.map((item) =>
-                item.id === props.id ? {...item,[key]: value } : item
+                item.id === id ? {...item,[key]: value } : item
         ))
     }
 
@@ -36,40 +57,52 @@ const Parameters = (props) => {
     }
 
     return (
-        <table>
-            <tbody>
-                <tr>
-                    <td align='right'>
-                        <p>Number of pages</p>
-                    </td>
-                    <td width='30%' height='20%' align='right'>
-                        <Form>
-                            <ButtonManage type="submit" onClick={decrement("pages")}>-</ButtonManage>
-                            <StyledInput
-                                name="pages"
-                                value={planProps.pages}
-                                onChange={handleChange("pages")}/>
-                            <ButtonManage type="submit" onClick={increment("pages")}>+</ButtonManage>
-                        </Form>
-                    </td>
-                </tr>
-                <tr>
-                    <td align='right'> 
-                    <p>Number of languages</p>
-                    </td>
-                    <td width='25%' height='20%' align='right'>
-                        <Form >
-                            <ButtonManage type="submit" onClick={decrement("lang")}>-</ButtonManage>
-                            <StyledInput
-                                name="languages"
-                                value={planProps.lang}
-                                onChange={handleChange("lang")}/>
-                            <ButtonManage type="submit"onClick={increment("lang")}>+</ButtonManage>
-                        </Form>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
+        <>
+            <div>
+                <StyledCardText className="parameters">Number of pages</StyledCardText>
+                <StyledCardText className="parameters">Number of languages</StyledCardText>
+            </div>
+            <div>
+                <HelpButtonModal type="button" onClick={decrement("pages")}>
+                    <i className="bi bi-dash-circle" style={iconStyle}></i>
+                </HelpButtonModal>
+                <HelpButtonModal type="button" onClick={decrement("lang")}>
+                    <i className="bi bi-dash-circle" style={iconStyle}></i>
+                </HelpButtonModal>
+            </div>
+            <div>
+                <StyledForm>
+                    <StyledInput
+                    name="pages"
+                    value={planProps.pages}
+                    onChange={handleChange("pages")}/>
+                </StyledForm>
+                <StyledForm >
+                    <StyledInput
+                        name="languages"
+                        value={planProps.lang}
+                        onChange={handleChange("lang")}/>
+                </StyledForm>
+            </div>
+            <div>
+            <HelpButtonModal type="button" onClick={increment("pages")}>
+                <i className="bi bi-plus-circle" style={iconStyle}></i>
+            </HelpButtonModal>
+            <HelpButtonModal type="button"onClick={increment("lang")}>
+                <i className="bi bi-plus-circle" style={iconStyle}></i>
+            </HelpButtonModal> 
+            </div>
+            <div>
+            <HelpButtonModal type="button" onClick={() => setShowModalPages(true)}>
+                <i className="bi bi-question-circle-fill" style={iconStyle}></i>
+            </HelpButtonModal>
+            <HelpButtonModal onClick={() => setShowModalLangs(true)}>
+                <i className="bi bi-question-circle-fill" style={iconStyle}></i>
+            </HelpButtonModal>
+                
+                
+            </div>
+        </>         
     )
 }
 

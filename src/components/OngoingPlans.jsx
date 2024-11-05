@@ -2,6 +2,7 @@ import {StyledCardTitle, StyledCard, StyledCardBody, CardContainer, StyledCardTe
 
 const OngoingPlans = ({personData = {} }) => {
     const { name, telephone, email, total, ...services } = personData
+    console.log(personData)
 
     return(
         <StyledCard className='personalizedPlanCard'>

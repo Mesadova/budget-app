@@ -1,11 +1,12 @@
 import { useState, useEffect } from 'react'
-import { Form, Button} from "react-bootstrap"
+import { Form } from "react-bootstrap"
 import AvailablePlans from './components/AvailablePlans'
 import BudgetForm from './components/BudgetForm'
 import { styled, createGlobalStyle  } from 'styled-components'
 import OngoingPlans from './components/OngoingPlans'
 import Parameters from './components/Parameters'
 import OngoingPlansNav from './components/OngoingPlansNav.jsx'
+import HelpModal from './components/HelpModal.jsx'
 
 const GlobalStyle = createGlobalStyle`
   body {
@@ -59,8 +60,6 @@ const Budget = styled.div`
 
 export const StyledCard = styled.div`
     display: flex;
-    border: solid;
-    border-color: red;
     flex-direction: column;
     flex-wrap: nowrap;
     min-width: 45%;
@@ -89,39 +88,41 @@ export const StyledCard = styled.div`
 
 export const CardContainer = styled.div`
     display: flex;
-    border: solid;
-    border-color: green;
     flex-grow: 1;
     justify-content: space-around;
     gap: 30px;
     margin-bottom: 14px;
+
     &.parameters {
-      align-items: flex-end;
+      display: grid;
+      grid-template-columns: 1fr 45px 25px 40px 45px;
       justify-content: flex-end;
-      align-content: flex-end;
-      flex-direction: column;
-      margin-bottom: 0px;
+      text-align: end;
+      align-items: center;
+      flex-grow: 0;
+      gap: 8px;
     }
+
     &.budgetForm {
       align-items: flex-start;
       justify-content: flex-start;
       align-content: flex-start;
       flex-direction: column;
     }
+
     &.personalizedPlan {
       display: grid;
+      flex-wrap: wrap;
       gap: 0;
       margin: 0;
       padding: 0;
       height: 150px;
-      grid-template-columns: 290px 1fr 110px;
+      grid-template-columns: 250px 1fr 110px;
     }
 `
 
 export const StyledCardBody = styled.div`
     display: flex;
-    border: solid;
-    border-color: blue;
     font-size: 16px;
     align-items: center;
     justify-content: center;
@@ -148,6 +149,9 @@ export const StyledCardBody = styled.div`
       flex-wrap: wrap;
       align-items: flex-start;
       flex-direction: column;
+    }
+    &.parameters{
+      height: 130px;
     }
 `
 
@@ -177,22 +181,24 @@ export const StyledCardText = styled.p`
       font-weight: 600;
       color: gray;
     }
-      &.contractedPlans {
+    &.contractedPlans {
       margin: 0;
       padding: 0;
       align-self: start;
       font-size: 14px;
     }
+    &.parameters {
+      margin-bottom: 8px;
+      padding-top: 8px;
+    }
 `
 
 export const StyledInput = styled(Form.Control)`
   font-size: 12px;
-  padding: 2px 5px;
-  width: 30%;
-  height: 30px;
+  height: 35px;
   border-radius: 7px;
-  justify-content: center;
-  align-items: center;
+  border-color: gray;
+  justify-content: end;
   text-align: center;
   &.budgetForm {
     text-align: start;
@@ -203,8 +209,14 @@ export const StyledInput = styled(Form.Control)`
     width: 70%;
   }
 `
+export const StyledForm = styled(Form)`
+  font-size: 12px;
+  width: 40px;
+  justify-content: flex-end;
+  text-align: center;
+`
 
-export const ButtonManage = styled(Button)`
+export const ButtonManage = styled.button`
     outline: 0;
     cursor: pointer;
     overflow: visible;
@@ -219,20 +231,42 @@ export const ButtonManage = styled(Button)`
     color: #0F1111;
 `
 
-
-
 const App = () => {
   const [total, setTotal] = useState(0)
+  const [showModalPages, setShowModalPages] = useState(false)
+  const [showModalLangs, setShowModalLangs] = useState(false)
   const [filteredPlans, setFilteredPlans] = useState(null)
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [selectedPlans, setSelectedPlans] = useState([])
   const [personalizedPlans, setPersonalizedPlans] = useState([])
   const [personData, setPersonData] = useState({ name: '', telephone: '', email: '', plans: '', total: '' })
-  const cardData = [
+  const [availablePlans, setAvailablePlans] = useState([
     {title: 'Seo', description: 'Programming of a full responsive web design.', price: 300},
     {title: 'Ads', description: 'Programming of a full responsive web design.', price: 400},
     {title: 'Web', description: 'Programming of a full responsive web design.', price: 500}
-  ]
+  ])
+  const [isEnabled, setIsEnabled] = useState(false);
+  const toggleSwitch = (e) => {
+    setIsEnabled(e.target.checked)
+    if (e.target.checked) {
+      discount()
+    } else {
+      revertDiscount()
+    }
+  }
+
+  const discount = () => {
+    const discountedPlan = availablePlans.map((prevPlanProps) => ({...prevPlanProps, ['price']: (prevPlanProps.price-(prevPlanProps.price*0.2)) }))
+    const discountedPlan2 = personalizedPlans.map((prevPlanProps) => ({...prevPlanProps, ['total']: (prevPlanProps.total-(prevPlanProps.total*0.2)) }))
+    setAvailablePlans(discountedPlan)
+    setPersonalizedPlans(discountedPlan2)
+  }
+  const revertDiscount = () => {
+    const discountedPlan = availablePlans.map((prevPlanProps) => ({...prevPlanProps, ['price']: (prevPlanProps.price+(prevPlanProps.price*0.25)) }))
+    const discountedPlan2 = personalizedPlans.map((prevPlanProps) => ({...prevPlanProps, ['total']: (prevPlanProps.total+(prevPlanProps.total*0.25)) }))
+    setAvailablePlans(discountedPlan)
+    setPersonalizedPlans(discountedPlan2)
+  }
 
   useEffect(() => {
     calcTotal()
@@ -245,6 +279,7 @@ const App = () => {
     setTotal(planSum)
   }
 
+
   const handlePersonalizePlan = (key) => (event) => {
     event.preventDefault()
     const newPersonData = event.target.value
@@ -256,7 +291,7 @@ const App = () => {
     if (selectedPlans.length !== 0) {
       setPersonData((prevData) => ({...prevData, ['plans']: selectedPlans}))
       const newPersonalizedPlan = ({...personData, ['plans']: selectedPlans, ['total']: total,
-                                  ['date']: `${new Date().getFullYear()}/${String(new Date().getMonth() + 1).padStart(2, '0')}/${String(new Date().getDate()).padStart(2, '0')} ${String(new Date().getHours()).padStart(2, '0')}:${String(new Date().getMinutes()).padStart(2, '0')}`})
+        ['date']: `${new Date().getFullYear()}/${String(new Date().getMonth() + 1).padStart(2, '0')}/${String(new Date().getDate()).padStart(2, '0')} ${String(new Date().getHours()).padStart(2, '0')}:${String(new Date().getMinutes()).padStart(2, '0')}:${String(new Date().getSeconds()).padStart(2, '0')}`})
       setPersonalizedPlans(personalizedPlans.concat(newPersonalizedPlan))
       setIsSubmitted(true)
       setSelectedPlans([])
@@ -297,10 +332,20 @@ const App = () => {
   }
 
   return (
+  <>
     <Container>
       <GlobalStyle></GlobalStyle>
+      <Form>
+        <Form.Check // prettier-ignore
+          type="switch"
+          id="custom-switch"
+          label="Check this switch"
+          checked={isEnabled}
+          onChange={toggleSwitch}
+        />
+      </Form>
       <Header>Get the best quality</Header>
-      {cardData.map((element, index) => {
+      {availablePlans.map((element, index) => {
         const isPlanChecked = selectedPlans.some(plan => plan.id === index && plan.planChecked)
         return (
           <StyledCard key={index}>
@@ -312,11 +357,10 @@ const App = () => {
             </CardContainer>
             {isPlanChecked && index === 2 && (
               <CardContainer className='parameters'>
-                <StyledCardBody className='parameters'>
                   <Parameters 
-                    id={index} selectedPlans={selectedPlans} setSelectedPlans={setSelectedPlans} 
+                    id={index} selectedPlans={selectedPlans} setSelectedPlans={setSelectedPlans}
+                    setShowModalLangs={setShowModalLangs} setShowModalPages={setShowModalPages}
                   />
-                </StyledCardBody>
               </CardContainer>
             )}
           </StyledCard>
@@ -339,6 +383,9 @@ const App = () => {
       ) : (personalizedPlans.map((plan, planIndex) => (<OngoingPlans key={planIndex} personData={plan}></OngoingPlans>))
       )) : (null)}
     </Container>
+    <HelpModal show={showModalLangs} onHide={() => setShowModalLangs(false)}/>
+    <HelpModal show={showModalPages} onHide={() => setShowModalPages(false)}/>
+  </>
   )
 }
 
