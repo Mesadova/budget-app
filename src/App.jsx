@@ -5,7 +5,7 @@ import BudgetForm from './components/BudgetForm'
 import { styled, createGlobalStyle  } from 'styled-components'
 import OngoingPlans from './components/OngoingPlans'
 import Parameters from './components/Parameters'
-import OngoingPlansNav from './components/OngoingPlansNav.jsx'
+import OngoingPlansFilter from './components/OngoingPlansFilter.jsx'
 import HelpModal from './components/HelpModal.jsx'
 
 const GlobalStyle = createGlobalStyle`
@@ -82,7 +82,6 @@ export const StyledCard = styled.div`
     }
     &.personalizedPlanCard {
       height: 100%;
-      
     }
 `
 
@@ -205,7 +204,7 @@ export const StyledInput = styled(Form.Control)`
   }
   &.navPlans {
     text-align: start;
-    height: 25px;
+    height: 37px;
     width: 70%;
   }
 `
@@ -233,23 +232,36 @@ export const ButtonManage = styled.button`
 
 const App = () => {
   const [total, setTotal] = useState(0)
-  const [isEnabled, setIsEnabled] = useState(false);
+  const [inputValue, setInputValue] = useState('')
   const [showModalPages, setShowModalPages] = useState(false)
   const [showModalLangs, setShowModalLangs] = useState(false)
-  const [filteredPlans, setFilteredPlans] = useState(null)
-  const [isSubmitted, setIsSubmitted] = useState(false);
-  const [selectedPlans, setSelectedPlans] = useState([])
-  const [personalizedPlans, setPersonalizedPlans] = useState([])
-  const [personData, setPersonData] = useState({ name: '', telephone: '', email: '', plans: '', total: '' })
+  const [isEnabled, setIsEnabled] = useState(false)
+  const [isSubmitted, setIsSubmitted] = useState(false)
   const [availablePlans, setAvailablePlans] = useState([
-    {title: 'Seo', description: 'Programming of a full responsive web design.', price: 300},
-    {title: 'Ads', description: 'Programming of a full responsive web design.', price: 400},
+    {title: 'Seo', description: 'Boost your online visibility and optimize your website.', price: 300},
+    {title: 'Ads', description: 'Show your relevant ads based on users interests.', price: 400},
     {title: 'Web', description: 'Programming of a full responsive web design.', price: 500}
   ])
+  const [selectedPlans, setSelectedPlans] = useState([])
+  const [personData, setPersonData] = useState({ name: '', telephone: '', email: '', plans: '', total: '' })
+  const [personalizedPlans, setPersonalizedPlans] = useState([])
+  const [filteredPlans, setFilteredPlans] = useState([])
 
   useEffect(() => {
     calcTotal()
   }, [selectedPlans])
+
+  const calcTotal = () => {
+    if (isEnabled) {
+      const planSumDiscount = selectedPlans.reduce((accumulator, currentValue) => 
+        accumulator + currentValue.planPrice + (((currentValue.planLangs + currentValue.planPages) * 30)-(((currentValue.planLangs + currentValue.planPages) * 30) * 0.2)), 0)
+      setTotal(planSumDiscount)
+    } else {
+      const planSum = selectedPlans.reduce((accumulator, currentValue) => 
+        accumulator + currentValue.planPrice + ((currentValue.planLangs + currentValue.planPages) * 30), 0)
+      setTotal(planSum)
+    }
+  }
 
   const toggleSwitch = (e) => {
     setIsEnabled(e.target.checked)
@@ -264,20 +276,8 @@ const App = () => {
     const availableDiscounted = availablePlans.map((prevPlanProps) => ({...prevPlanProps, ['price']: (prevPlanProps.price - (prevPlanProps.price*0.2)) }))
     const selectedDiscount = selectedPlans.map((prevPlanProps) => ({...prevPlanProps, ['planPrice']: (prevPlanProps.planPrice - (prevPlanProps.planPrice*0.2)) }))
     const personalizedPlansDiscount = personalizedPlans.map((prevPlanProps) => ({...prevPlanProps, ['total']: prevPlanProps.total - (prevPlanProps.total*0.2)}))
-    if (filteredPlans) {
-      const filteredPlansDiscount = personalizedPlans.map((prevPlanProps) => ({...prevPlanProps, ['total']: prevPlanProps.total - (prevPlanProps.total*0.2)}))
-      setFilteredPlans(filteredPlansDiscount)
-    }
-    setAvailablePlans(availableDiscounted)
-    setSelectedPlans(selectedDiscount)
-    setPersonalizedPlans(personalizedPlansDiscount)
-  }
-  const revertDiscount = () => {
-    const availableDiscounted = availablePlans.map((prevPlanProps) => ({...prevPlanProps, ['price']: (prevPlanProps.price + (prevPlanProps.price*0.25)) }))
-    const selectedDiscount = selectedPlans.map((prevPlanProps) => ({...prevPlanProps, ['planPrice']: (prevPlanProps.planPrice + (prevPlanProps.planPrice*0.25)) }))
-    const personalizedPlansDiscount = personalizedPlans.map((prevPlanProps) => ({...prevPlanProps, ['total']: prevPlanProps.total + (prevPlanProps.total*0.25)}))
-    if (filteredPlans) {
-      const filteredPlansDiscount = personalizedPlans.map((prevPlanProps) => ({...prevPlanProps, ['total']: prevPlanProps.total + (prevPlanProps.total*0.25)}))
+    if (filteredPlans.length > 0) {
+      const filteredPlansDiscount = filteredPlans.map((prevPlanProps) => ({...prevPlanProps, ['total']: prevPlanProps.total - (prevPlanProps.total*0.2)}))
       setFilteredPlans(filteredPlansDiscount)
     }
     setAvailablePlans(availableDiscounted)
@@ -285,16 +285,17 @@ const App = () => {
     setPersonalizedPlans(personalizedPlansDiscount)
   }
 
-  const calcTotal = () => {
-    if (isEnabled) {
-      const planSumDiscount = selectedPlans.reduce((accumulator, currentValue) => 
-        accumulator + currentValue.planPrice + (((currentValue.planLangs + currentValue.planPages) * 30)-(((currentValue.planLangs + currentValue.planPages) * 30) * 0.2)), 0)
-      setTotal(planSumDiscount)
-    } else {
-      const planSum = selectedPlans.reduce((accumulator, currentValue) => 
-        accumulator + currentValue.planPrice + ((currentValue.planLangs + currentValue.planPages) * 30), 0)
-      setTotal(planSum)
+  const revertDiscount = () => {
+    const availableDiscounted = availablePlans.map((prevPlanProps) => ({...prevPlanProps, ['price']: (prevPlanProps.price + (prevPlanProps.price*0.25)) }))
+    const selectedDiscount = selectedPlans.map((prevPlanProps) => ({...prevPlanProps, ['planPrice']: (prevPlanProps.planPrice + (prevPlanProps.planPrice*0.25)) }))
+    const personalizedPlansDiscount = personalizedPlans.map((prevPlanProps) => ({...prevPlanProps, ['total']: prevPlanProps.total + (prevPlanProps.total*0.25)}))
+    if (filteredPlans.length > 0) {
+      const filteredPlansDiscount = filteredPlans.map((prevPlanProps) => ({...prevPlanProps, ['total']: prevPlanProps.total + (prevPlanProps.total*0.25)}))
+      setFilteredPlans(filteredPlansDiscount)
     }
+    setAvailablePlans(availableDiscounted)
+    setSelectedPlans(selectedDiscount)
+    setPersonalizedPlans(personalizedPlansDiscount)
   }
 
   const handlePersonalizePlan = (key) => (event) => {
@@ -322,46 +323,77 @@ const App = () => {
        }
       setIsSubmitted(true)
       setSelectedPlans([])
+      setFilteredPlans([])
+      sortPlans('reSort')
+      setInputValue('')
     } else {
-      alert('Select one plan please')
+      alert('You must select at least one plan')
     }
   }
 
-  const handleCheckboxChange = (title, price, index) => (e) => {
-    let newPlan;
-    const checked = e.target.checked
-    if (title === "Web") {
-      newPlan = {
-        id: index,
-        planTitle: title,
-        planChecked: checked,
-        planPrice: price,
-        planPages: 1,
-        planLangs: 2,
-      }
-    } else {
-      newPlan = {
-        id: index,
-        planTitle: title,
-        planChecked: checked,
-        planPrice: price,
-        planPages: null,
-        planLangs: null,
-      }
+  const sortByPrice = () => {
+    return personalizedPlans.map((v, i) => {
+        return {i, value: v.total }
+    })
+}
+  const sortByName = () => {
+    return personalizedPlans.map((v, i) => {
+        return {i, value: v.name }
+    })
+  }
+  const sortByDate = () => {
+    return personalizedPlans.map((v, i) => {
+        return {i, value: v.date }
+    })
+  }
+
+  const sortPlans = (key) => (event) => {
+    event.preventDefault()
+    let mapped = {}
+    switch (key) {
+        case 'name':
+            mapped = sortByName()
+            break;
+        case 'price':
+            mapped = sortByPrice()
+            break;
+        case 'date':
+            mapped = sortByDate()
+            break;
+        default:
+            mapped = sortByDate()
+            break;
     }
-    if (newPlan.planChecked) {
-        const addedPlans = [...selectedPlans, newPlan]
-        setSelectedPlans(addedPlans)
+    if (key === 'reSort' | key === 'name') {
+        mapped.sort((a, b) => {
+            if (a.value > b.value) {
+                return 1;
+            }
+            if (a.value < b.value) {
+                return -1;
+            }
+            return 0;
+        })
     } else {
-        const removePlans = selectedPlans.filter(element => element.planTitle !== newPlan.planTitle)
-        setSelectedPlans(removePlans)
+        mapped.sort((a, b) => {
+            if (a.value > b.value) {
+                return -1;
+            }
+            if (a.value < b.value) {
+                return 1;
+            }
+            return 0;
+        })
     }
+    const result = mapped.map((v) => personalizedPlans[v.i]);
+    setPersonalizedPlans(result)
   }
 
   return (
   <>
     <Container>
       <GlobalStyle></GlobalStyle>
+      <Header>Get the best quality</Header>
       <Form>
         <Form.Check
           type="switch"
@@ -371,7 +403,6 @@ const App = () => {
           onChange={toggleSwitch}
         />
       </Form>
-      <Header>Get the best quality</Header>
       {availablePlans.map((element, index) => {
         const isPlanChecked = selectedPlans.some(plan => plan.id === index && plan.planChecked)
         return (
@@ -379,7 +410,7 @@ const App = () => {
             <CardContainer>
               <AvailablePlans 
                 title={element.title} description={element.description} price={element.price} index={index}
-                isPlanChecked={isPlanChecked} handleCheckboxChange={handleCheckboxChange} 
+                isPlanChecked={isPlanChecked} setSelectedPlans={setSelectedPlans} selectedPlans={selectedPlans}
               />
             </CardContainer>
             {isPlanChecked && index === 2 && (
@@ -401,17 +432,17 @@ const App = () => {
         personData={personData}>
       </BudgetForm>
       <Budget className='onGoing'>
-        <p>Ongoing plans:</p>
+        <p>Ongoing plans: ({personalizedPlans.length})</p>
       </Budget>
-      <OngoingPlansNav filteredPlans={filteredPlans} setFilteredPlans={setFilteredPlans}
-      personalizedPlans={personalizedPlans} setPersonalizedPlans={setPersonalizedPlans}></OngoingPlansNav>
-      {isSubmitted ? (filteredPlans ? (
+      <OngoingPlansFilter filteredPlans={filteredPlans} setFilteredPlans={setFilteredPlans} inputValue={inputValue} setInputValue={setInputValue}
+      personalizedPlans={personalizedPlans} setPersonalizedPlans={setPersonalizedPlans} sortPlans={sortPlans}></OngoingPlansFilter>
+      {isSubmitted ? (filteredPlans.length > 0 ? (
         filteredPlans.map((data, index) => (<OngoingPlans key={index} customPlans={data}></OngoingPlans>))
       ) : (personalizedPlans.map((data, index) => (<OngoingPlans key={index} customPlans={data}></OngoingPlans>))
       )) : (null)}
     </Container>
-    <HelpModal show={showModalLangs} onHide={() => setShowModalLangs(false)}/>
-    <HelpModal show={showModalPages} onHide={() => setShowModalPages(false)}/>
+    <HelpModal show={showModalLangs} onHide={() => setShowModalLangs(false)} value={'languages'}/>
+    <HelpModal show={showModalPages} onHide={() => setShowModalPages(false)} value={'pages'}/>
   </>
   )
 }
