@@ -53,8 +53,8 @@ const Budget = styled.div`
   font-weight: bold;
   color: white;
   &.onGoing {
-    margin-left: -35%;
-    margin-bottom: -3%;
+    margin-left: -40%;
+    margin-bottom: -1%;
   }
 `
 
@@ -233,6 +233,7 @@ export const ButtonManage = styled.button`
 
 const App = () => {
   const [total, setTotal] = useState(0)
+  const [isEnabled, setIsEnabled] = useState(false);
   const [showModalPages, setShowModalPages] = useState(false)
   const [showModalLangs, setShowModalLangs] = useState(false)
   const [filteredPlans, setFilteredPlans] = useState(null)
@@ -245,7 +246,11 @@ const App = () => {
     {title: 'Ads', description: 'Programming of a full responsive web design.', price: 400},
     {title: 'Web', description: 'Programming of a full responsive web design.', price: 500}
   ])
-  const [isEnabled, setIsEnabled] = useState(false);
+
+  useEffect(() => {
+    calcTotal()
+  }, [selectedPlans])
+
   const toggleSwitch = (e) => {
     setIsEnabled(e.target.checked)
     if (e.target.checked) {
@@ -256,29 +261,41 @@ const App = () => {
   }
 
   const discount = () => {
-    const discountedPlan = availablePlans.map((prevPlanProps) => ({...prevPlanProps, ['price']: (prevPlanProps.price-(prevPlanProps.price*0.2)) }))
-    const discountedPlan2 = personalizedPlans.map((prevPlanProps) => ({...prevPlanProps, ['total']: (prevPlanProps.total-(prevPlanProps.total*0.2)) }))
-    setAvailablePlans(discountedPlan)
-    setPersonalizedPlans(discountedPlan2)
+    const availableDiscounted = availablePlans.map((prevPlanProps) => ({...prevPlanProps, ['price']: (prevPlanProps.price - (prevPlanProps.price*0.2)) }))
+    const selectedDiscount = selectedPlans.map((prevPlanProps) => ({...prevPlanProps, ['planPrice']: (prevPlanProps.planPrice - (prevPlanProps.planPrice*0.2)) }))
+    const personalizedPlansDiscount = personalizedPlans.map((prevPlanProps) => ({...prevPlanProps, ['total']: prevPlanProps.total - (prevPlanProps.total*0.2)}))
+    if (filteredPlans) {
+      const filteredPlansDiscount = personalizedPlans.map((prevPlanProps) => ({...prevPlanProps, ['total']: prevPlanProps.total - (prevPlanProps.total*0.2)}))
+      setFilteredPlans(filteredPlansDiscount)
+    }
+    setAvailablePlans(availableDiscounted)
+    setSelectedPlans(selectedDiscount)
+    setPersonalizedPlans(personalizedPlansDiscount)
   }
   const revertDiscount = () => {
-    const discountedPlan = availablePlans.map((prevPlanProps) => ({...prevPlanProps, ['price']: (prevPlanProps.price+(prevPlanProps.price*0.25)) }))
-    const discountedPlan2 = personalizedPlans.map((prevPlanProps) => ({...prevPlanProps, ['total']: (prevPlanProps.total+(prevPlanProps.total*0.25)) }))
-    setAvailablePlans(discountedPlan)
-    setPersonalizedPlans(discountedPlan2)
+    const availableDiscounted = availablePlans.map((prevPlanProps) => ({...prevPlanProps, ['price']: (prevPlanProps.price + (prevPlanProps.price*0.25)) }))
+    const selectedDiscount = selectedPlans.map((prevPlanProps) => ({...prevPlanProps, ['planPrice']: (prevPlanProps.planPrice + (prevPlanProps.planPrice*0.25)) }))
+    const personalizedPlansDiscount = personalizedPlans.map((prevPlanProps) => ({...prevPlanProps, ['total']: prevPlanProps.total + (prevPlanProps.total*0.25)}))
+    if (filteredPlans) {
+      const filteredPlansDiscount = personalizedPlans.map((prevPlanProps) => ({...prevPlanProps, ['total']: prevPlanProps.total + (prevPlanProps.total*0.25)}))
+      setFilteredPlans(filteredPlansDiscount)
+    }
+    setAvailablePlans(availableDiscounted)
+    setSelectedPlans(selectedDiscount)
+    setPersonalizedPlans(personalizedPlansDiscount)
   }
-
-  useEffect(() => {
-    calcTotal()
-  }, [selectedPlans])
 
   const calcTotal = () => {
-    const planSum = selectedPlans.reduce((accumulator, currentValue) => 
-        accumulator + currentValue.planPrice + ((currentValue.planLangs + currentValue.planPages) * 30), 0
-    )
-    setTotal(planSum)
+    if (isEnabled) {
+      const planSumDiscount = selectedPlans.reduce((accumulator, currentValue) => 
+        accumulator + currentValue.planPrice + (((currentValue.planLangs + currentValue.planPages) * 30)-(((currentValue.planLangs + currentValue.planPages) * 30) * 0.2)), 0)
+      setTotal(planSumDiscount)
+    } else {
+      const planSum = selectedPlans.reduce((accumulator, currentValue) => 
+        accumulator + currentValue.planPrice + ((currentValue.planLangs + currentValue.planPages) * 30), 0)
+      setTotal(planSum)
+    }
   }
-
 
   const handlePersonalizePlan = (key) => (event) => {
     event.preventDefault()
@@ -290,13 +307,23 @@ const App = () => {
     event.preventDefault()
     if (selectedPlans.length !== 0) {
       setPersonData((prevData) => ({...prevData, ['plans']: selectedPlans}))
-      const newPersonalizedPlan = ({...personData, ['plans']: selectedPlans, ['total']: total,
-        ['date']: `${new Date().getFullYear()}/${String(new Date().getMonth() + 1).padStart(2, '0')}/${String(new Date().getDate()).padStart(2, '0')} ${String(new Date().getHours()).padStart(2, '0')}:${String(new Date().getMinutes()).padStart(2, '0')}:${String(new Date().getSeconds()).padStart(2, '0')}`})
-      setPersonalizedPlans(personalizedPlans.concat(newPersonalizedPlan))
+      if (isEnabled) {
+        const planSumDiscount = selectedPlans.reduce((accumulator, currentValue) => 
+          accumulator + currentValue.planPrice + (((currentValue.planLangs + currentValue.planPages) * 30)-(((currentValue.planLangs + currentValue.planPages) * 30) * 0.2)), 0)
+        const newPersonalizedPlan = ({...personData, ['plans']: selectedPlans, ['total']: planSumDiscount,
+          ['date']: `${new Date().getFullYear()}/${String(new Date().getMonth() + 1).padStart(2, '0')}/${String(new Date().getDate()).padStart(2, '0')} ${String(new Date().getHours()).padStart(2, '0')}:${String(new Date().getMinutes()).padStart(2, '0')}:${String(new Date().getSeconds()).padStart(2, '0')}`})
+        setPersonalizedPlans(personalizedPlans.concat(newPersonalizedPlan))
+       } else {
+        const planSum = selectedPlans.reduce((accumulator, currentValue) => 
+          accumulator + currentValue.planPrice + ((currentValue.planLangs + currentValue.planPages) * 30), 0)
+        const newPersonalizedPlan = ({...personData, ['plans']: selectedPlans, ['total']: planSum,
+          ['date']: `${new Date().getFullYear()}/${String(new Date().getMonth() + 1).padStart(2, '0')}/${String(new Date().getDate()).padStart(2, '0')} ${String(new Date().getHours()).padStart(2, '0')}:${String(new Date().getMinutes()).padStart(2, '0')}:${String(new Date().getSeconds()).padStart(2, '0')}`})
+        setPersonalizedPlans(personalizedPlans.concat(newPersonalizedPlan))
+       }
       setIsSubmitted(true)
       setSelectedPlans([])
     } else {
-      console.log('select a plan')
+      alert('Select one plan please')
     }
   }
 
@@ -336,7 +363,7 @@ const App = () => {
     <Container>
       <GlobalStyle></GlobalStyle>
       <Form>
-        <Form.Check // prettier-ignore
+        <Form.Check
           type="switch"
           id="custom-switch"
           label="Check this switch"
@@ -379,8 +406,8 @@ const App = () => {
       <OngoingPlansNav filteredPlans={filteredPlans} setFilteredPlans={setFilteredPlans}
       personalizedPlans={personalizedPlans} setPersonalizedPlans={setPersonalizedPlans}></OngoingPlansNav>
       {isSubmitted ? (filteredPlans ? (
-        filteredPlans.map((plan, planIndex) => (<OngoingPlans key={planIndex} personData={plan}></OngoingPlans>))
-      ) : (personalizedPlans.map((plan, planIndex) => (<OngoingPlans key={planIndex} personData={plan}></OngoingPlans>))
+        filteredPlans.map((data, index) => (<OngoingPlans key={index} customPlans={data}></OngoingPlans>))
+      ) : (personalizedPlans.map((data, index) => (<OngoingPlans key={index} customPlans={data}></OngoingPlans>))
       )) : (null)}
     </Container>
     <HelpModal show={showModalLangs} onHide={() => setShowModalLangs(false)}/>

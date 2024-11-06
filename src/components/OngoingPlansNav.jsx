@@ -5,7 +5,7 @@ import 'bootstrap-icons/font/bootstrap-icons.css'
 
 export const OngoingNav = styled.div`
   display: flex;
-  width: 30%;
+  width: 50%;
   margin-top: 0px;
   margin-left: 10%;
   gap: 7px;
@@ -17,7 +17,7 @@ const ButtonNav = styled(Button)`
     background: #89C9AF;
     font-size: 15px;
     width: 40%;
-    height: 40%px;
+    height: 40%;
     text-align: center;
     font-weight: bold;
     color: black;
@@ -28,19 +28,16 @@ const OngoingPlansNav = ({setPersonalizedPlans, personalizedPlans, setFilteredPl
 
     const sortByPrice = () => {
         return personalizedPlans.map((v, i) => {
-            console.log(v,i)
             return {i, value: v.total }
         })
     }
     const sortByName = () => {
         return personalizedPlans.map((v, i) => {
-            console.log(v,i)
             return {i, value: v.name }
         })
     }
     const sortByDate = () => {
         return personalizedPlans.map((v, i) => {
-            console.log(v,i)
             return {i, value: v.date }
         })
     }
@@ -84,7 +81,6 @@ const OngoingPlansNav = ({setPersonalizedPlans, personalizedPlans, setFilteredPl
             })
         }
         const result = mapped.map((v) => personalizedPlans[v.i]);
-        console.log(result)
         setPersonalizedPlans(result)
     }
 

@@ -1,8 +1,7 @@
 import {StyledCardTitle, StyledCard, StyledCardBody, CardContainer, StyledCardText} from '../App'
 
-const OngoingPlans = ({personData = {} }) => {
-    const { name, telephone, email, total, ...services } = personData
-    console.log(personData)
+const OngoingPlans = ({customPlans = {} }) => {
+    const { name, telephone, email, total, ...selectedPlans } = customPlans
 
     return(
         <StyledCard className='personalizedPlanCard'>
@@ -16,7 +15,7 @@ const OngoingPlans = ({personData = {} }) => {
                     <ul>
                     <StyledCardText className='contractedPlans'>
                         Contracted services:
-                        {Object.entries(services).map(([key, value]) => (
+                        {Object.entries(selectedPlans).map(([key, value]) => (
                             typeof value === "object" && value !== null ? (
                                 Object.entries(value).map(([subKey, subValue]) => (
                                     <li key={subKey}>
