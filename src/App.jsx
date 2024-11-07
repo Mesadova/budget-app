@@ -233,17 +233,20 @@ export const ButtonManage = styled.button`
 const App = () => {
   const [total, setTotal] = useState(0)
   const [inputValue, setInputValue] = useState('')
+  const [errors, setErrors] = useState({})
   const [showModalPages, setShowModalPages] = useState(false)
   const [showModalLangs, setShowModalLangs] = useState(false)
   const [isEnabled, setIsEnabled] = useState(false)
   const [isSubmitted, setIsSubmitted] = useState(false)
+  // --- Initial available plans
   const [availablePlans, setAvailablePlans] = useState([
     {title: 'Seo', description: 'Boost your online visibility and optimize your website.', price: 300},
     {title: 'Ads', description: 'Show your relevant ads based on users interests.', price: 400},
     {title: 'Web', description: 'Programming of a full responsive web design.', price: 500}
   ])
-  const [selectedPlans, setSelectedPlans] = useState([])
+  // --- Arrays manipulation of the plans
   const [personData, setPersonData] = useState({ name: '', telephone: '', email: '', plans: '', total: '' })
+  const [selectedPlans, setSelectedPlans] = useState([])
   const [personalizedPlans, setPersonalizedPlans] = useState([])
   const [filteredPlans, setFilteredPlans] = useState([])
 
@@ -265,11 +268,8 @@ const App = () => {
 
   const toggleSwitch = (e) => {
     setIsEnabled(e.target.checked)
-    if (e.target.checked) {
-      discount()
-    } else {
-      revertDiscount()
-    }
+    if (e.target.checked) { discount() } 
+    else { revertDiscount() }
   }
 
   const discount = () => {
@@ -306,6 +306,11 @@ const App = () => {
 
   const createPersonalizePlan = (event) => {
     event.preventDefault()
+    const errors = {};
+    if (!personData.name) errors.name = "Name is required";
+    if (!personData.telephone) errors.name = "Name is required";
+    if (!personData.email.includes("@")) errors.email = "Email is invalid";
+    setErrors(errors)
     if (selectedPlans.length !== 0) {
       setPersonData((prevData) => ({...prevData, ['plans']: selectedPlans}))
       if (isEnabled) {
@@ -366,23 +371,15 @@ const App = () => {
     }
     if (key === 'reSort' | key === 'name') {
         mapped.sort((a, b) => {
-            if (a.value > b.value) {
-                return 1;
-            }
-            if (a.value < b.value) {
-                return -1;
-            }
-            return 0;
+            if (a.value > b.value) {return 1}
+            if (a.value < b.value) {return -1}
+            return 0
         })
     } else {
         mapped.sort((a, b) => {
-            if (a.value > b.value) {
-                return -1;
-            }
-            if (a.value < b.value) {
-                return 1;
-            }
-            return 0;
+            if (a.value > b.value) {return -1}
+            if (a.value < b.value) {return 1}
+            return 0
         })
     }
     const result = mapped.map((v) => personalizedPlans[v.i]);
@@ -429,7 +426,7 @@ const App = () => {
       </Budget>
       <BudgetForm 
         handlePersonalizePlan={handlePersonalizePlan} createPersonalizePlan={createPersonalizePlan} 
-        personData={personData}>
+        personData={personData} errors={errors} setErrors={setErrors}>
       </BudgetForm>
       <Budget className='onGoing'>
         <p>Ongoing plans: ({personalizedPlans.length})</p>

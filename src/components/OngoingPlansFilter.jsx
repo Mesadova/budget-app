@@ -1,4 +1,3 @@
-import { Button } from 'react-bootstrap'
 import styled from 'styled-components'
 import { StyledInput } from '../App'
 import 'bootstrap-icons/font/bootstrap-icons.css'

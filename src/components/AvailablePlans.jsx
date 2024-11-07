@@ -20,7 +20,7 @@ const AvailablePlans = ({title, description, price, index, isPlanChecked, setSel
     }
     
     return(
-        <CardContainer>
+        <CardContainer className='personalizedPlan'>
             <StyledCardBody className="headerStart">
                 <StyledCardTitle>{title}</StyledCardTitle>
                 <StyledCardText>{description}</StyledCardText>

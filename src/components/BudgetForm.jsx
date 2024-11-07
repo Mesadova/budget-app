@@ -17,7 +17,7 @@ const ButtonBudgetForm = styled(Button)`
     font-family: 'Poppins';
 `
 
-const BudgetForm = ({ handlePersonalizePlan, createPersonalizePlan, personData}) => {
+const BudgetForm = ({ handlePersonalizePlan, createPersonalizePlan, personData, errors}) => {
     return(
         <StyledCard className='budgetForm'>
             <CardContainer className='budgetForm'>
@@ -28,11 +28,11 @@ const BudgetForm = ({ handlePersonalizePlan, createPersonalizePlan, personData})
             <Form onSubmit={createPersonalizePlan}>
                 <StyledCardBody className='budgetForm'>
                         <StyledInput className='budgetForm' placeholder='Name' 
-                        value={personData.name} onChange={handlePersonalizePlan('name')}/>  
+                        value={personData.name} onChange={handlePersonalizePlan('name')} required />
                         <StyledInput className='budgetForm' placeholder='Telephone' 
-                        value={personData.telephone} onChange={handlePersonalizePlan('telephone')}/> 
+                        value={personData.telephone} onChange={handlePersonalizePlan('telephone')} required  />
                         <StyledInput className='budgetForm' placeholder='Email' 
-                        value={personData.email} onChange={handlePersonalizePlan('email')}/> 
+                        value={personData.email} onChange={handlePersonalizePlan('email')} required />
                         <ButtonBudgetForm  type="submit" >Ask plan price</ButtonBudgetForm>
                 </StyledCardBody>
             </Form>

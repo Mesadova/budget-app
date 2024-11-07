@@ -1,4 +1,3 @@
-import {Button} from 'react-bootstrap'
 import Modal from 'react-bootstrap/Modal'
 import {StyledCardTitle, StyledCard, StyledCardBody, CardContainer, StyledCardText} from '../App'
 
