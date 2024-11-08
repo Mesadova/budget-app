@@ -34,9 +34,14 @@ const Parameters = ({setShowModalLangs, setShowModalPages, setSelectedPlans, id}
     }
 
     const handleChange = (key) => (event) => {
-        const newValue = parseInt(event.target.value, 10);
-        setPlanProps((prevPlanProps) => ({...prevPlanProps, [key]: newValue }))
-        updatePlanProps(key == "pages" ? "planPages" : "planLangs", newValue)
+        if (parseInt(event.target.value, 10) <= 0) {
+            alert('error')
+        } else {
+            const newValue = parseInt(event.target.value, 10);
+            setPlanProps((prevPlanProps) => ({...prevPlanProps, [key]: newValue }))
+            updatePlanProps(key == "pages" ? "planPages" : "planLangs", newValue)
+        }
+        
     }
 
     const increment = (key) => (event) => {
@@ -72,13 +77,15 @@ const Parameters = ({setShowModalLangs, setShowModalPages, setSelectedPlans, id}
             </div>
             <div>
                 <StyledForm>
-                    <StyledInput
+                    <StyledInput $center
+                    min='1'
                     name="pages"
                     value={planProps.pages}
                     onChange={handleChange("pages")}/>
                 </StyledForm>
                 <StyledForm >
-                    <StyledInput
+                    <StyledInput $center
+                        min='1'
                         name="languages"
                         value={planProps.lang}
                         onChange={handleChange("lang")}/>

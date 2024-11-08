@@ -1,14 +1,18 @@
 import { useState, useEffect } from 'react'
+import { styled, createGlobalStyle  } from 'styled-components'
+import { Link } from 'react-router-dom'
 import { Form } from "react-bootstrap"
+
+// Components:
 import AvailablePlans from './components/AvailablePlans'
 import BudgetForm from './components/BudgetForm'
-import { styled, createGlobalStyle  } from 'styled-components'
 import OngoingPlans from './components/OngoingPlans'
 import Parameters from './components/Parameters'
 import OngoingPlansFilter from './components/OngoingPlansFilter.jsx'
 import HelpModal from './components/HelpModal.jsx'
 
-const GlobalStyle = createGlobalStyle`
+// Styles:
+export const GlobalStyle = createGlobalStyle`
   body {
     margin: 0;
     font-family: 'Poppins';
@@ -16,19 +20,18 @@ const GlobalStyle = createGlobalStyle`
   }
 `
 
-const Container = styled.div`
+export const Container = styled.div`
   display: flex;
   flex-wrap: wrap;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  border: solid;
   gap: 30px;
 `
 
-const Header = styled.div`
+export const Header = styled.div`
   display: flex;
-  width: 70%;
+  width: 60%;
   height: 12rem;
   background-image: url("./src/assets/header.jpg");
   border-radius: 30px;
@@ -47,7 +50,7 @@ const Header = styled.div`
   }
 `
 
-const Budget = styled.div`
+export const Budget = styled.div`
   margin-left: 35%;
   font-size: 30px;
   font-weight: bold;
@@ -86,12 +89,9 @@ export const StyledCard = styled.div`
 `
 
 export const CardContainer = styled.div`
-    display: flex;
-    flex-grow: 1;
     justify-content: space-around;
     gap: 30px;
     margin-bottom: 14px;
-
     &.parameters {
       display: grid;
       grid-template-columns: 1fr 45px 25px 40px 45px;
@@ -112,11 +112,12 @@ export const CardContainer = styled.div`
     &.personalizedPlan {
       display: grid;
       flex-wrap: wrap;
+      align-items: center;
       gap: 0;
       margin: 0;
       padding: 0;
-      height: 150px;
-      grid-template-columns: 250px 1fr 110px;
+      height: 135px;
+      grid-template-columns: 280px 1fr 110px;
     }
 `
 
@@ -169,16 +170,16 @@ export const StyledCardText = styled.p`
       font-size: 30px;
     }
     &.personalizedPlan {
-      margin: 2px;
-      font-size: 12px;
-      color: gray;
+      margin: ${props => props.$switch ? "10px" : "2px"};
+      font-size: ${props => props.$switch ? "20px" : '12px' };
+      color: ${props => props.$switch ? "white" : "gray"};
     }
     &.personalizedTotal {
       margin: 0px;
       align-self: center;
       font-size: 20px;
       font-weight: 600;
-      color: gray;
+      color: ${props => props.discount ? "lightgreen" : "gray"};
     }
     &.contractedPlans {
       margin: 0;
@@ -198,15 +199,7 @@ export const StyledInput = styled(Form.Control)`
   border-radius: 7px;
   border-color: gray;
   justify-content: end;
-  text-align: center;
-  &.budgetForm {
-    text-align: start;
-  }
-  &.navPlans {
-    text-align: start;
-    height: 37px;
-    width: 70%;
-  }
+  text-align: ${props => props.$center ? 'center' : 'start'};
 `
 export const StyledForm = styled(Form)`
   font-size: 12px;
@@ -215,20 +208,18 @@ export const StyledForm = styled(Form)`
   text-align: center;
 `
 
-export const ButtonManage = styled.button`
-    outline: 0;
-    cursor: pointer;
-    overflow: visible;
-    border-radius: 95px;
-    background: #FFD814;
-    border: 1px solid #000000;
-    font-size: 15px;
-    height: 25px;
-    width: 25px;
-    text-align: center;
-    font-weight: bold;
-    color: #0F1111;
+export const StyledSwitch = styled(Form.Check)`
+  color: white;
+  font-size: 20px;
+  
+  .form-check-input {
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='-4 -4 8 8'%3e%3ccircle r='3' fill='green'/%3e%3c/svg%3e");
+    background-color: ${(props) => (props.checked ? 'lightgreen' : 'white')};
+    border-color: ${(props) => (props.checked ? 'lightgreen' : 'gray')};
+    color: ${(props) => (props.checked ? 'lightgreen' : 'white')};
+  }
 `
+
 
 const App = () => {
   const [total, setTotal] = useState(0)
@@ -238,6 +229,7 @@ const App = () => {
   const [showModalLangs, setShowModalLangs] = useState(false)
   const [isEnabled, setIsEnabled] = useState(false)
   const [isSubmitted, setIsSubmitted] = useState(false)
+  const [validated, setValidated] = useState(false)
   // --- Initial available plans
   const [availablePlans, setAvailablePlans] = useState([
     {title: 'Seo', description: 'Boost your online visibility and optimize your website.', price: 300},
@@ -305,35 +297,42 @@ const App = () => {
   }
 
   const createPersonalizePlan = (event) => {
+    const form = event.currentTarget
     event.preventDefault()
-    const errors = {};
-    if (!personData.name) errors.name = "Name is required";
-    if (!personData.telephone) errors.name = "Name is required";
-    if (!personData.email.includes("@")) errors.email = "Email is invalid";
-    setErrors(errors)
-    if (selectedPlans.length !== 0) {
-      setPersonData((prevData) => ({...prevData, ['plans']: selectedPlans}))
-      if (isEnabled) {
-        const planSumDiscount = selectedPlans.reduce((accumulator, currentValue) => 
-          accumulator + currentValue.planPrice + (((currentValue.planLangs + currentValue.planPages) * 30)-(((currentValue.planLangs + currentValue.planPages) * 30) * 0.2)), 0)
-        const newPersonalizedPlan = ({...personData, ['plans']: selectedPlans, ['total']: planSumDiscount,
-          ['date']: `${new Date().getFullYear()}/${String(new Date().getMonth() + 1).padStart(2, '0')}/${String(new Date().getDate()).padStart(2, '0')} ${String(new Date().getHours()).padStart(2, '0')}:${String(new Date().getMinutes()).padStart(2, '0')}:${String(new Date().getSeconds()).padStart(2, '0')}`})
-        setPersonalizedPlans(personalizedPlans.concat(newPersonalizedPlan))
-       } else {
-        const planSum = selectedPlans.reduce((accumulator, currentValue) => 
-          accumulator + currentValue.planPrice + ((currentValue.planLangs + currentValue.planPages) * 30), 0)
-        const newPersonalizedPlan = ({...personData, ['plans']: selectedPlans, ['total']: planSum,
-          ['date']: `${new Date().getFullYear()}/${String(new Date().getMonth() + 1).padStart(2, '0')}/${String(new Date().getDate()).padStart(2, '0')} ${String(new Date().getHours()).padStart(2, '0')}:${String(new Date().getMinutes()).padStart(2, '0')}:${String(new Date().getSeconds()).padStart(2, '0')}`})
-        setPersonalizedPlans(personalizedPlans.concat(newPersonalizedPlan))
-       }
-      setIsSubmitted(true)
-      setSelectedPlans([])
-      setFilteredPlans([])
-      sortPlans('reSort')
-      setInputValue('')
+    if (form.checkValidity() === false) {
+      event.preventDefault()
+      event.stopPropagation()
     } else {
-      alert('You must select at least one plan')
+      const errors = {};
+      if (!personData.name) errors.name = "Name is required";
+      if (!personData.telephone) errors.name = "Name is required";
+      if (!personData.email.includes("@")) errors.email = "Email is invalid";
+      setErrors(errors)
+      if (selectedPlans.length !== 0) {
+        setPersonData((prevData) => ({...prevData, ['plans']: selectedPlans}))
+        if (isEnabled) {
+          const planSumDiscount = selectedPlans.reduce((accumulator, currentValue) => 
+            accumulator + currentValue.planPrice + (((currentValue.planLangs + currentValue.planPages) * 30)-(((currentValue.planLangs + currentValue.planPages) * 30) * 0.2)), 0)
+          const newPersonalizedPlan = ({...personData, ['plans']: selectedPlans, ['total']: planSumDiscount,
+            ['date']: `${new Date().getFullYear()}/${String(new Date().getMonth() + 1).padStart(2, '0')}/${String(new Date().getDate()).padStart(2, '0')} ${String(new Date().getHours()).padStart(2, '0')}:${String(new Date().getMinutes()).padStart(2, '0')}:${String(new Date().getSeconds()).padStart(2, '0')}`})
+          setPersonalizedPlans(personalizedPlans.concat(newPersonalizedPlan))
+        } else {
+          const planSum = selectedPlans.reduce((accumulator, currentValue) => 
+            accumulator + currentValue.planPrice + ((currentValue.planLangs + currentValue.planPages) * 30), 0)
+          const newPersonalizedPlan = ({...personData, ['plans']: selectedPlans, ['total']: planSum,
+            ['date']: `${new Date().getFullYear()}/${String(new Date().getMonth() + 1).padStart(2, '0')}/${String(new Date().getDate()).padStart(2, '0')} ${String(new Date().getHours()).padStart(2, '0')}:${String(new Date().getMinutes()).padStart(2, '0')}:${String(new Date().getSeconds()).padStart(2, '0')}`})
+          setPersonalizedPlans(personalizedPlans.concat(newPersonalizedPlan))
+        }
+        setIsSubmitted(true)
+        setSelectedPlans([])
+        setFilteredPlans([])
+        sortPlans('reSort')
+        setInputValue('')
+      } else {
+        alert('You must select at least one plan')
+      }
     }
+    setValidated(true)
   }
 
   const sortByPrice = () => {
@@ -390,26 +389,26 @@ const App = () => {
   <>
     <Container>
       <GlobalStyle></GlobalStyle>
+      <Link to="/">Welcome page</Link>
       <Header>Get the best quality</Header>
-      <Form>
-        <Form.Check
-          type="switch"
-          id="custom-switch"
-          label="Check this switch"
-          checked={isEnabled}
-          onChange={toggleSwitch}
+      <Form style={{display: 'flex'}}>
+        <StyledCardText className='personalizedPlan' $switch >Monthly payment</StyledCardText>
+        <StyledSwitch style={{marginTop: '10px', marginLeft: '12px'}}
+            type="switch"
+            id="custom-switch"
+            checked={isEnabled}
+            onChange={toggleSwitch}
         />
+        <StyledCardText className='personalizedPlan' $switch >Annual payment</StyledCardText>
       </Form>
       {availablePlans.map((element, index) => {
         const isPlanChecked = selectedPlans.some(plan => plan.id === index && plan.planChecked)
         return (
           <StyledCard key={index}>
-            <CardContainer>
               <AvailablePlans 
-                title={element.title} description={element.description} price={element.price} index={index}
+                title={element.title} description={element.description} price={element.price} index={index} isEnabled={isEnabled}
                 isPlanChecked={isPlanChecked} setSelectedPlans={setSelectedPlans} selectedPlans={selectedPlans}
               />
-            </CardContainer>
             {isPlanChecked && index === 2 && (
               <CardContainer className='parameters'>
                   <Parameters 
@@ -426,7 +425,7 @@ const App = () => {
       </Budget>
       <BudgetForm 
         handlePersonalizePlan={handlePersonalizePlan} createPersonalizePlan={createPersonalizePlan} 
-        personData={personData} errors={errors} setErrors={setErrors}>
+        personData={personData} validated={validated}>
       </BudgetForm>
       <Budget className='onGoing'>
         <p>Ongoing plans: ({personalizedPlans.length})</p>

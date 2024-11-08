@@ -1,5 +1,4 @@
 import Modal from 'react-bootstrap/Modal'
-import {StyledCardTitle, StyledCard, StyledCardBody, CardContainer, StyledCardText} from '../App'
 
 const HelpModal = (props) => {
     return(

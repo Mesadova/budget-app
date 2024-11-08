@@ -10,14 +10,17 @@ export const OngoingNav = styled.div`
   margin-bottom: 25px;
   gap: 7px;
 `
-const ButtonNav = styled.button`
+export const ButtonNav = styled.button`
     outline: 0;
     cursor: pointer;
+    overflow: hidden;
+    white-space: wrap;
+    text-overflow: ellipsis;
     border-radius: 10px;
     background: #89C9AF;
     font-size: 15px;
-    width: 40%;
-    height: 40%;
+    width: 45%;
+    height: 35px;
     text-align: center;
     font-weight: bold;
     color: black;

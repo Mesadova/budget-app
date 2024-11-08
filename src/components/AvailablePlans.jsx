@@ -1,7 +1,7 @@
 import {StyledCardTitle, StyledCardBody, StyledCardText, CardContainer} from '../App'
 import { FormCheck } from "react-bootstrap"
 
-const AvailablePlans = ({title, description, price, index, isPlanChecked, setSelectedPlans, selectedPlans}) => {
+const AvailablePlans = ({title, description, price, index, isPlanChecked, setSelectedPlans, selectedPlans, isEnabled}) => {
     const handleCheckboxChange = (title, price, index) => (e) => {
         let newPlan;
         const checked = e.target.checked
@@ -25,8 +25,9 @@ const AvailablePlans = ({title, description, price, index, isPlanChecked, setSel
                 <StyledCardTitle>{title}</StyledCardTitle>
                 <StyledCardText>{description}</StyledCardText>
             </StyledCardBody>
-            <StyledCardBody>
-                <StyledCardText className="price">{price}</StyledCardText><p><b>€</b></p>
+            <StyledCardBody className="header">
+                {isEnabled && <StyledCardText discount className="personalizedTotal">Save 20%</StyledCardText>}
+                <StyledCardText className="price">{`${price}€`}</StyledCardText>
             </StyledCardBody>
             <StyledCardBody>
                 <FormCheck type='checkbox' id={index} label={`  Add`}
