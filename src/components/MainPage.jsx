@@ -46,7 +46,7 @@ const MainPage = () => {
         <Container>
             <GlobalStyle></GlobalStyle>
             <MainPageHeader>Make yourself visible over the internet</MainPageHeader>
-            <Link to="calculator"><ButtonWelcome>Get your tailor-made plan</ButtonWelcome></Link>
+            <Link to="home"><ButtonWelcome>Get your tailor-made plan</ButtonWelcome></Link>
         </Container>
     )
 }

@@ -3,6 +3,7 @@ import { styled, createGlobalStyle  } from 'styled-components'
 import { Link } from 'react-router-dom'
 import { Form } from "react-bootstrap"
 import { ButtonWelcome } from './components/MainPage.jsx'
+import { useNavigate, useSearchParams } from "react-router-dom";
 
 // Components:
 import AvailablePlans from './components/AvailablePlans'
@@ -214,11 +215,18 @@ export const StyledSwitch = styled(Form.Check)`
 
 
 const App = () => {
+  const [searchParams, setSearchParams] = useSearchParams()
+  const initialSelectedPlans = JSON.parse(decodeURIComponent(searchParams.get('selectedPlans') || '[]'))
+  const [selectedPlans, setSelectedPlans] = useState(initialSelectedPlans)
+
+  const initialEnabled = searchParams.get('enabled') || false
+  const [isEnabled, setIsEnabled] = useState(initialEnabled)
+
   const [total, setTotal] = useState(0)
   const [inputValue, setInputValue] = useState('')
   const [showModalPages, setShowModalPages] = useState(false)
   const [showModalLangs, setShowModalLangs] = useState(false)
-  const [isEnabled, setIsEnabled] = useState(false)
+  
   const [isSubmitted, setIsSubmitted] = useState(false)
   const [validated, setValidated] = useState(false)
   // --- Initial available plans
@@ -229,13 +237,18 @@ const App = () => {
   ])
   // --- Arrays manipulation of the plans
   const [personData, setPersonData] = useState({ name: '', telephone: '', email: '', plans: '', total: '' })
-  const [selectedPlans, setSelectedPlans] = useState([])
+  
   const [personalizedPlans, setPersonalizedPlans] = useState([])
   const [filteredPlans, setFilteredPlans] = useState([])
 
   useEffect(() => {
     calcTotal()
   }, [selectedPlans])
+
+  useEffect(() => {
+    const encodedPlans = encodeURIComponent(JSON.stringify(selectedPlans));
+    setSearchParams({ selectedPlans: encodedPlans, enabled: isEnabled });
+  }, [selectedPlans, setSearchParams])
 
   const calcTotal = () => {
     if (isEnabled) {
@@ -251,8 +264,11 @@ const App = () => {
 
   const toggleSwitch = (e) => {
     setIsEnabled(e.target.checked)
-    if (e.target.checked) { discount() } 
-    else { revertDiscount() }
+    if (e.target.checked) {
+      discount()
+    } else {
+      revertDiscount()
+    }
   }
 
   const discount = () => {
@@ -266,6 +282,7 @@ const App = () => {
     setAvailablePlans(availableDiscounted)
     setSelectedPlans(selectedDiscount)
     setPersonalizedPlans(personalizedPlansDiscount)
+    
   }
 
   const revertDiscount = () => {
@@ -297,6 +314,7 @@ const App = () => {
           ['date']: `${new Date().getFullYear()}/${String(new Date().getMonth() + 1).padStart(2, '0')}/${String(new Date().getDate()).padStart(2, '0')} ${String(new Date().getHours()).padStart(2, '0')}:${String(new Date().getMinutes()).padStart(2, '0')}:${String(new Date().getSeconds()).padStart(2, '0')}`})
         setPersonalizedPlans(personalizedPlans.concat(newPersonalizedPlan))
       }
+      console.log(personalizedPlans)
       setIsSubmitted(true)
       setSelectedPlans([])
       setFilteredPlans([])
