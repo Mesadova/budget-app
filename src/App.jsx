@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { styled, createGlobalStyle  } from 'styled-components'
 import { Link } from 'react-router-dom'
 import { Form } from "react-bootstrap"
+import { ButtonWelcome } from './components/MainPage.jsx'
 
 // Components:
 import AvailablePlans from './components/AvailablePlans'
@@ -74,14 +75,6 @@ export const StyledCard = styled.div`
     align-content: center;
     &.budgetForm {
       margin-bottom: 120px;
-      &:after {
-        content: "";
-        position: relative;
-        height: 0.5em;
-        border-top: 5px dashed gray;
-        border-radius: 280px;
-        z-index: -1;
-      }
     }
     &.personalizedPlanCard {
       height: 100%;
@@ -101,7 +94,6 @@ export const CardContainer = styled.div`
       flex-grow: 0;
       gap: 8px;
     }
-
     &.budgetForm {
       align-items: flex-start;
       justify-content: flex-start;
@@ -117,7 +109,7 @@ export const CardContainer = styled.div`
       margin: 0;
       padding: 0;
       height: 135px;
-      grid-template-columns: 280px 1fr 110px;
+      grid-template-columns: 260px 1fr 110px;
     }
 `
 
@@ -224,7 +216,6 @@ export const StyledSwitch = styled(Form.Check)`
 const App = () => {
   const [total, setTotal] = useState(0)
   const [inputValue, setInputValue] = useState('')
-  const [errors, setErrors] = useState({})
   const [showModalPages, setShowModalPages] = useState(false)
   const [showModalLangs, setShowModalLangs] = useState(false)
   const [isEnabled, setIsEnabled] = useState(false)
@@ -290,49 +281,30 @@ const App = () => {
     setPersonalizedPlans(personalizedPlansDiscount)
   }
 
-  const handlePersonalizePlan = (key) => (event) => {
-    event.preventDefault()
-    const newPersonData = event.target.value
-    setPersonData((prevData) => ({...prevData, [key]: newPersonData}))
-  }
-
-  const createPersonalizePlan = (event) => {
-    const form = event.currentTarget
-    event.preventDefault()
-    if (form.checkValidity() === false) {
-      event.preventDefault()
-      event.stopPropagation()
-    } else {
-      const errors = {};
-      if (!personData.name) errors.name = "Name is required";
-      if (!personData.telephone) errors.name = "Name is required";
-      if (!personData.email.includes("@")) errors.email = "Email is invalid";
-      setErrors(errors)
-      if (selectedPlans.length !== 0) {
-        setPersonData((prevData) => ({...prevData, ['plans']: selectedPlans}))
-        if (isEnabled) {
-          const planSumDiscount = selectedPlans.reduce((accumulator, currentValue) => 
-            accumulator + currentValue.planPrice + (((currentValue.planLangs + currentValue.planPages) * 30)-(((currentValue.planLangs + currentValue.planPages) * 30) * 0.2)), 0)
-          const newPersonalizedPlan = ({...personData, ['plans']: selectedPlans, ['total']: planSumDiscount,
-            ['date']: `${new Date().getFullYear()}/${String(new Date().getMonth() + 1).padStart(2, '0')}/${String(new Date().getDate()).padStart(2, '0')} ${String(new Date().getHours()).padStart(2, '0')}:${String(new Date().getMinutes()).padStart(2, '0')}:${String(new Date().getSeconds()).padStart(2, '0')}`})
-          setPersonalizedPlans(personalizedPlans.concat(newPersonalizedPlan))
-        } else {
-          const planSum = selectedPlans.reduce((accumulator, currentValue) => 
-            accumulator + currentValue.planPrice + ((currentValue.planLangs + currentValue.planPages) * 30), 0)
-          const newPersonalizedPlan = ({...personData, ['plans']: selectedPlans, ['total']: planSum,
-            ['date']: `${new Date().getFullYear()}/${String(new Date().getMonth() + 1).padStart(2, '0')}/${String(new Date().getDate()).padStart(2, '0')} ${String(new Date().getHours()).padStart(2, '0')}:${String(new Date().getMinutes()).padStart(2, '0')}:${String(new Date().getSeconds()).padStart(2, '0')}`})
-          setPersonalizedPlans(personalizedPlans.concat(newPersonalizedPlan))
-        }
-        setIsSubmitted(true)
-        setSelectedPlans([])
-        setFilteredPlans([])
-        sortPlans('reSort')
-        setInputValue('')
+  const createPersonalizePlan = () => {
+    if (selectedPlans.length > 0) {
+      setPersonData((prevData) => ({...prevData, ['plans']: selectedPlans}))
+      if (isEnabled) {
+        const planSumDiscount = selectedPlans.reduce((accumulator, currentValue) => 
+          accumulator + currentValue.planPrice + (((currentValue.planLangs + currentValue.planPages) * 30)-(((currentValue.planLangs + currentValue.planPages) * 30) * 0.2)), 0)
+        const newPersonalizedPlan = ({...personData, ['plans']: selectedPlans, ['total']: planSumDiscount,
+          ['date']: `${new Date().getFullYear()}/${String(new Date().getMonth() + 1).padStart(2, '0')}/${String(new Date().getDate()).padStart(2, '0')} ${String(new Date().getHours()).padStart(2, '0')}:${String(new Date().getMinutes()).padStart(2, '0')}:${String(new Date().getSeconds()).padStart(2, '0')}`})
+        setPersonalizedPlans(personalizedPlans.concat(newPersonalizedPlan))
       } else {
-        alert('You must select at least one plan')
+        const planSum = selectedPlans.reduce((accumulator, currentValue) => 
+          accumulator + currentValue.planPrice + ((currentValue.planLangs + currentValue.planPages) * 30), 0)
+        const newPersonalizedPlan = ({...personData, ['plans']: selectedPlans, ['total']: planSum,
+          ['date']: `${new Date().getFullYear()}/${String(new Date().getMonth() + 1).padStart(2, '0')}/${String(new Date().getDate()).padStart(2, '0')} ${String(new Date().getHours()).padStart(2, '0')}:${String(new Date().getMinutes()).padStart(2, '0')}:${String(new Date().getSeconds()).padStart(2, '0')}`})
+        setPersonalizedPlans(personalizedPlans.concat(newPersonalizedPlan))
       }
+      setIsSubmitted(true)
+      setSelectedPlans([])
+      setFilteredPlans([])
+      sortPlans('reSort')
+      setInputValue('')
+    } else {
+      alert('You must select at least one plan')
     }
-    setValidated(true)
   }
 
   const sortByPrice = () => {
@@ -389,7 +361,9 @@ const App = () => {
   <>
     <Container>
       <GlobalStyle></GlobalStyle>
-      <Link to="/">Welcome page</Link>
+      <div>
+        <Link to="/"><ButtonWelcome>Welcome page</ButtonWelcome></Link>
+      </div>
       <Header>Get the best quality</Header>
       <Form style={{display: 'flex'}}>
         <StyledCardText className='personalizedPlan' $switch >Monthly payment</StyledCardText>
@@ -424,8 +398,8 @@ const App = () => {
         <p>Budget price: {total}€</p>
       </Budget>
       <BudgetForm 
-        handlePersonalizePlan={handlePersonalizePlan} createPersonalizePlan={createPersonalizePlan} 
-        personData={personData} validated={validated}>
+        createPersonalizePlan={createPersonalizePlan} 
+        personData={personData} validated={validated} setValidated={setValidated} setPersonData={setPersonData}>
       </BudgetForm>
       <Budget className='onGoing'>
         <p>Ongoing plans: ({personalizedPlans.length})</p>
