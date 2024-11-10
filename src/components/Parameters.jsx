@@ -92,22 +92,20 @@ const Parameters = ({setShowModalLangs, setShowModalPages, setSelectedPlans, id}
                 </StyledForm>
             </div>
             <div>
-            <HelpButtonModal type="button" onClick={increment("pages")}>
-                <i className="bi bi-plus-circle" style={iconStyle}></i>
-            </HelpButtonModal>
-            <HelpButtonModal type="button"onClick={increment("lang")}>
-                <i className="bi bi-plus-circle" style={iconStyle}></i>
-            </HelpButtonModal> 
+                <HelpButtonModal type="button" onClick={increment("pages")}>
+                    <i className="bi bi-plus-circle" style={iconStyle}></i>
+                </HelpButtonModal>
+                <HelpButtonModal type="button"onClick={increment("lang")}>
+                    <i className="bi bi-plus-circle" style={iconStyle}></i>
+                </HelpButtonModal> 
             </div>
             <div>
-            <HelpButtonModal type="button" onClick={() => setShowModalPages(true)}>
-                <i className="bi bi-question-circle-fill" style={iconStyle}></i>
-            </HelpButtonModal>
-            <HelpButtonModal onClick={() => setShowModalLangs(true)}>
-                <i className="bi bi-question-circle-fill" style={iconStyle}></i>
-            </HelpButtonModal>
-                
-                
+                <HelpButtonModal type="button" onClick={() => setShowModalPages(true)}>
+                    <i className="bi bi-question-circle-fill" style={iconStyle}></i>
+                </HelpButtonModal>
+                <HelpButtonModal onClick={() => setShowModalLangs(true)}>
+                    <i className="bi bi-question-circle-fill" style={iconStyle}></i>
+                </HelpButtonModal>
             </div>
         </>         
     )

@@ -28,7 +28,6 @@ export const ButtonNav = styled.button`
 `
 
 const OngoingPlansFilter = ({ personalizedPlans, setFilteredPlans, inputValue, setInputValue, sortPlans }) => {
-
     const handleFilterChange = (event) => {
         const updatedSearch = event.target.value
         setInputValue(updatedSearch)

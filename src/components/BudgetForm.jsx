@@ -1,5 +1,4 @@
 import { Form, Col, Row } from 'react-bootstrap'
-import { useState } from 'react'
 import {StyledCardTitle, StyledCard, StyledCardBody, StyledInput } from '../App'
 import { ButtonNav } from './OngoingPlansFilter'
 
@@ -21,8 +20,6 @@ const BudgetForm = ({ createPersonalizePlan, personData, setPersonData, validate
         }
         setValidated(true)
     }
-
-
 
     return(
         <StyledCard className='budgetForm'>
