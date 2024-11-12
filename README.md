@@ -51,17 +51,3 @@ npm run dev
 ```
 
 The project will run on `http://localhost:5173` by default.
-
-2. **Using Styled Components, Bootstrap and React Router DOM:**
-
-    Styled Components is used for component-specific styles. Styles are created in JavaScript and scoped to individual components.
-    Bootstrap is used to provide responsive layout and additional UI components.
-    React Router DOM is a popular library for handling routing in React applications. It allows you to manage navigation and render different components based on the URL path.
-
-```bash
-npm install styled-components
-npm install react-bootstrap
-npm install react-bootstrap-icons
-npm install react-router-dom
-```
-
