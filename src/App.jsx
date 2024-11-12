@@ -79,6 +79,13 @@ export const StyledCard = styled.div`
     }
     &.personalizedPlanCard {
       height: 100%;
+      flex-wrap: wrap;
+      width: 45%;
+    }
+    &.onGoingPlanCard {
+      max-width: 45%;
+      min-width: 45%;
+      flex-wrap: wrap;
     }
 `
 
@@ -101,7 +108,6 @@ export const CardContainer = styled.div`
       align-content: flex-start;
       flex-direction: column;
     }
-
     &.personalizedPlan {
       display: grid;
       flex-wrap: wrap;
@@ -111,6 +117,14 @@ export const CardContainer = styled.div`
       padding: 0;
       height: 135px;
       grid-template-columns: 260px 1fr 110px;
+    }
+    &.onGoingPlans {
+      display: grid;
+      gap: 0;
+      align-items: center;
+      grid-template-columns: 140px 350px 1fr;
+      flex-wrap: wrap;
+      height: 135px;
     }
 `
 

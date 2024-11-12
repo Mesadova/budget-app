@@ -4,8 +4,8 @@ const OngoingPlans = ({customPlans = {} }) => {
     const { name, telephone, email, total, ...selectedPlans } = customPlans
 
     return(
-        <StyledCard className='personalizedPlanCard'>
-            <CardContainer className='personalizedPlan'>
+        <StyledCard className='onGoingPlanCard'>
+            <CardContainer className='onGoingPlans'>
                 <StyledCardBody className='contractedServices'>
                     {name && <StyledCardTitle>{name}</StyledCardTitle>}
                     {telephone && <StyledCardText className='personalizedPlan'>{telephone}</StyledCardText>}
